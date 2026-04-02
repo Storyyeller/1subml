@@ -358,7 +358,7 @@ let rec even = fun x -> if x == 0 then true else odd(x - 1)
 
 Sometimes you need to make different decisions based on runtime data in a type safe manner. 1SubML supports this via _variants_, also known as _sum types_ or _enums_. Basically, the way they work is that you can wrap a value with a tag, and then later match against it. The match expression has branches that execute different code depending on the runtime value of the tag. Crucially, each match branch has access to the static type of the original wrapped value for that specific tag.
 
-To wrap a value, prefix it with a grave (\`) character and an identifier tag, e.g. `` `Foo 42``.
+To wrap a value, prefix it with a grave (`` ` ``) character and an identifier tag, e.g. `` `Foo 42``.
 
 As with records, you can destructure variant values using variant patterns:
 
@@ -556,13 +556,13 @@ For example, ``loop `Break 42`` is equivalent to just `42`, while ``loop `Contin
 let fib = fun n -> (
     let r = {mut n; mut a=1; mut b=1}; // record to hold mutable state
     loop if r.n <= 1 then
-            \`Break r.a
+            `Break r.a
         else (
             r.n <- r.n - 1;
             let old_a = r.a;
             r.a <- r.a + r.b;
             r.b <-  old_a;
-            \`Continue ()
+            `Continue ()
         ) 
 );
 print "fib 1000 =", fib 1000;
