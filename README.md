@@ -6,7 +6,7 @@
 
 ## Try It
 
-[Try 1SubML in the web playground](https://storyyeller.github.io/onesubml-demo/index.html) -- edit, type-check, and run code directly in your browser.
+[Try 1SubML in the web playground](https://storyyeller.github.io/1subml/index.html) -- edit, type-check, and run code directly in your browser.
 
 ## Quick Example
 
@@ -116,7 +116,7 @@ You can then invoke the compiler like this:
 The `cli` binary will automatically compile your 1SubML code to Javascript and then execute it using `node`.
 
 
-To build the [web demo](https://storyyeller.github.io/onesubml-demo/index.html) from source, run `site/build.sh`. You will need to have `npm` and `wasm-pack` installed.
+To build the [web demo](https://storyyeller.github.io/1subml/index.html) from source, run `site/build.sh`. You will need to have `npm` and `wasm-pack` installed.
 
 ## Documentation
 

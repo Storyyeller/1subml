@@ -1,6 +1,6 @@
 # 1SubML Language Guide
 
-This guide covers the 1SubML language from the ground up. You can try all examples in the [web playground](https://storyyeller.github.io/onesubml-demo/index.html).
+This guide covers the 1SubML language from the ground up. You can try all examples in the [web playground](https://storyyeller.github.io/1subml/index.html).
 
 ## Table of Contents
 
