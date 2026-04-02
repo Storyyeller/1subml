@@ -76,3 +76,7 @@ This guide covers the 1SubML language from the ground up. You can try all exampl
 - [Implicit declarations](guide_ch4.md#implicit-declarations)
 
 ### [Standard Library Reference](stdlib.md)
+- [Exception](stdlib.md#exception)
+- [Vec](stdlib.md#vec)
+- [Map](stdlib.md#map)
+- [Dyn](stdlib.md#dyn)
