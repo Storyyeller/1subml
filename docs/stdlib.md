@@ -86,7 +86,7 @@ Vec.push (v, 20);
 print Vec.size v; // 2
 ```
 
-**`pop: [T]. vec[T<-never] -> [\`Some T | \`None]`**
+**``pop: [T]. vec[T<-never] -> [`Some T | `None]``**
 
 Removes and returns the last element, or `` `None`` if empty.
 
@@ -94,7 +94,7 @@ Removes and returns the last element, or `` `None`` if empty.
 print Vec.pop v; // Some 20
 ```
 
-**`get: [T]. (vec[T<-never], int) -> [\`Some T | \`None]`**
+**``get: [T]. (vec[T<-never], int) -> [`Some T | `None]``**
 
 Returns the element at the given index, or `` `None`` if out of bounds.
 
@@ -180,7 +180,7 @@ Map.set (m, "x", 10);
 Map.set (m, "y", 20);
 ```
 
-**`get: [K; V]. (map[any<-K; V<-never], K) -> [\`Some V | \`None]`**
+**``get: [K; V]. (map[any<-K; V<-never], K) -> [`Some V | `None]``**
 
 Returns the value for the given key, or `` `None`` if not found.
 
@@ -255,7 +255,7 @@ This is useful when you need a heterogeneous collection or want to pass values o
 
 ### Functions
 
-**`new: [T]. any -> {wrap: T -> dyn; unwrap: dyn -> [\`Some T | \`None]}`**
+**``new: [T]. any -> {wrap: T -> dyn; unwrap: dyn -> [`Some T | `None]}``**
 
 Creates a new unique tag for type `T`. Returns a record with two functions:
 
