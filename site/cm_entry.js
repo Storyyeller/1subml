@@ -1,7 +1,6 @@
 export {EditorView, keymap, lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, rectangularSelection, crosshairCursor, highlightActiveLine} from '@codemirror/view'
 export {EditorState} from '@codemirror/state'
 export {oneDark} from '@codemirror/theme-one-dark'
-export {javascript} from '@codemirror/lang-javascript'
 export {foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldKeymap, StreamLanguage} from '@codemirror/language'
 export {history, defaultKeymap, historyKeymap} from '@codemirror/commands'
 export {highlightSelectionMatches, searchKeymap} from '@codemirror/search'

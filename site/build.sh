@@ -3,7 +3,7 @@ set -e
 cd "$(dirname "$0")"
 
 # Build CM6 bundle
-npm install --prefix . codemirror @codemirror/theme-one-dark
+npm install --prefix .
 npx esbuild cm_entry.js --bundle --format=esm --outfile=vendor/codemirror.js
 
 # Build WASM

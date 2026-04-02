@@ -7,12 +7,10 @@ site/pkg/
 site/stdlib_files.js
 site/vendor/
 site/node_modules/
-site/package.json
 site/package-lock.json
 wasm-pack.log
 
 local.html
-compiler_lib/src/grammar.rs
 
 /test*.ml
 *.txt
