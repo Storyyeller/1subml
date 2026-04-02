@@ -1,0 +1,8 @@
+let _ = {x: int = "hello"};
+####
+TypeError: Value is required to have type int here:
+let _ = {x: int = "hello"};
+            ^~~             
+However, that value may have type str here:
+let _ = {x: int = "hello"};
+                  ^~~~~~~

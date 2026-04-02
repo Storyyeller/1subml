@@ -1,0 +1,13 @@
+
+let r = {mut x=`A 0};
+
+let res = match r with 
+| {x=`A} when (r.x <- `B 0; false) -> 0
+| {x=`B}                           -> 1
+| {x=`A}                           -> 2
+;
+
+print (res, r);  // (2, {x=B 0})
+
+####
+(2, {x=B 0})

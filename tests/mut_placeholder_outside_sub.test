@@ -1,0 +1,5 @@
+let x: _.T = 42;
+####
+SyntaxError: Substitution placeholders are only allowed in coercion expression type substitutions.
+let x: _.T = 42;
+       ^~~

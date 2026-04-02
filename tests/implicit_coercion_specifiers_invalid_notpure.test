@@ -1,0 +1,10 @@
+type T = {x: int};
+let b = T {x=12};
+
+print (fun[C] implicit{C: Q _} (c: C, Q: (C -> {x: int})) -> c.x) (b, T$);
+
+####
+TypeError: Invalid implicit coercion definition. Not a pure identity function.
+let b = T {x=12};
+print (fun[C] implicit{C: Q _} (c: C, Q: (C -> {x: int})) -> c.x) (b, T$);
+                          ^

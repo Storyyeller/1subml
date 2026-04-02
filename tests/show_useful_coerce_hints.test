@@ -1,0 +1,15 @@
+type F = (int, (int, float));
+let (a, (b, (c, d: int))) = (1, F (2, (3, 4.5)));
+####
+TypeError: Value is required to have type int here:
+type F = (int, (int, float));
+let (a, (b, (c, d: int))) = (1, F (2, (3, 4.5)));
+                   ^~~                            
+However, that value may have type float here:
+type F = (int, (int, float));
+                     ^~~~~    
+let (a, (b, (c, d: int))) = (1, F (2, (3, 4.5)));
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+type F = (int, (int, float));
+let (a, _ (b, (c, d: int))) = (1, F (2, (3, 4.5)));
+        ++

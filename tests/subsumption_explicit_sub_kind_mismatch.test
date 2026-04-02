@@ -1,0 +1,16 @@
+type Box[+T] = {v: T};
+type Foo = int -> int;
+
+let f = fun x -> (
+    let _ = (x: [T]. T -> T :> Foo with [T = Box]);
+);
+####
+KindError: Type constructor has 1 parameters here:
+type Box[+T] = {v: T};
+     ^~~               
+type Foo = int -> int;
+Note: But it is expected to have 0 parameters here:
+let f = fun x -> (
+    let _ = (x: [T]. T -> T :> Foo with [T = Box]);
+                 ^                                  
+);

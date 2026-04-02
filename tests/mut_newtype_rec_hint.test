@@ -1,0 +1,11 @@
+type Foo = | Bar Foo
+;
+####
+SyntaxError: Undefined type
+type Foo = | Bar Foo
+                 ^~~ 
+;
+Hint: Consider making the definition recursive like this:
+type rec Foo = | Bar Foo
+     ++++                
+;

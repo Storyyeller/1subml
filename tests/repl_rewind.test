@@ -1,0 +1,23 @@
+#### REPL
+type Foo = {x: int};
+let f = fun x -> x.x + 1;
+####
+
+#### INPUT
+print f {x="Hello"};
+####
+TypeError: Value is required to have type int by the + operator expression here:
+type Foo = {x: int};
+let f = fun x -> x.x + 1;
+                 ^~~      
+However, that value may have type str here:
+print f {x="Hello"};
+           ^~~~~~~   
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+type Foo = {x: int};
+let f = fun x: _ -> x.x + 1;
+             +++
+#### INPUT
+print f Foo {x=42};
+####
+43

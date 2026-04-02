@@ -1,0 +1,5 @@
+(* Check that constructor-of! can be used on spines with no params. *)
+alias f=constructor-of!([T]. T -> T);
+let f: f = fun[T] x: T :: T -> x;
+####
+

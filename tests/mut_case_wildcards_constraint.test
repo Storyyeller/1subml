@@ -1,0 +1,21 @@
+let f = fun x -> match x with
+| `A (`B v) -> v
+| y -> y + 1;
+f (`A (`B 42))
+####
+TypeError: Value is required to have type int by the + operator expression here:
+let f = fun x -> match x with
+| `A (`B v) -> v
+| y -> y + 1;
+       ^      
+f (`A (`B 42))
+However, that value may be a variant here:
+| `A (`B v) -> v
+| y -> y + 1;
+f (`A (`B 42))
+   ^~          
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let f = fun x: _ -> match x with
+             +++                 
+| `A (`B v) -> v
+| y -> y + 1;

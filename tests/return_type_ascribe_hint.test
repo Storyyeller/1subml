@@ -1,0 +1,15 @@
+let f = fun (x: int) -> x;
+let _: str = f 1;
+####
+TypeError: Value is required to have type str here:
+let f = fun (x: int) -> x;
+let _: str = f 1;
+       ^~~        
+However, that value may have type int here:
+let f = fun (x: int) -> x;
+                ^~~        
+let _: str = f 1;
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let f = fun (x: int) :: _ -> x;
+                    +++++       
+let _: str = f 1;

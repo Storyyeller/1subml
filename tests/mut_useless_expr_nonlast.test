@@ -1,0 +1,8 @@
+1;
+let x = 2;
+####
+SyntaxError: The value of this expression will be ignored.
+1;
+^  
+let x = 2;
+Hint: If intentional, use let _ = ... to explicitly ignore it.

@@ -1,0 +1,8 @@
+type Bad[+T] = T -> int;
+####
+SyntaxError: Type parameter 'T' is used contravariantly here:
+type Bad[+T] = T -> int;
+               ^         
+Note: But it is declared as covariant here:
+type Bad[+T] = T -> int;
+         ^

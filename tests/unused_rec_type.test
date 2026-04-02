@@ -1,0 +1,3 @@
+let _ = fun x : (rec T=int) -> x;
+####
+

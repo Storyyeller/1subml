@@ -1,0 +1,23 @@
+let f = fun x -> match x with
+| `A `C -> 0
+| `A `D -> 1
+| `B _ -> 2
+;
+f (`A (`E {}))
+####
+TypeError: Unhandled variant E.
+| `B _ -> 2
+;
+f (`A (`E {}))
+       ^~      
+Note: Variant may not be handled here. For example, the match pattern `A may not be covered.
+let f = fun x -> match x with
+| `A `C -> 0
+     ^~      
+| `A `D -> 1
+| `B _ -> 2
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let f = fun x: _ -> match x with
+             +++                 
+| `A `C -> 0
+| `A `D -> 1

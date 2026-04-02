@@ -1,0 +1,3 @@
+let _ = fun[C] implicit{C: Q _} (c: C, Q: (C => never)) -> 0;
+####
+

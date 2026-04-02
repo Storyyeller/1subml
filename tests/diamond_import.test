@@ -1,0 +1,10 @@
+import A;
+import B;
+#### A.ml
+import C;
+#### B.ml
+import C;
+#### C.ml
+print "C";
+####
+C

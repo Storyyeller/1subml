@@ -1,0 +1,5 @@
+let f = fun {a} as x -> a;
+####
+SyntaxError: 'as' patterns are not allowed in function argument patterns.
+let f = fun {a} as x -> a;
+                   ^

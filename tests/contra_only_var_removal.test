@@ -1,0 +1,4 @@
+let f: (any -> str) = fun[T] (x: T) -> "hello";
+
+####
+

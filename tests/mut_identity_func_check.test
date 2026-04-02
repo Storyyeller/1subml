@@ -1,0 +1,24 @@
+type T = int;
+let f = fun[A] x: A :: A -> x;
+let _ = (f :> [A]. A => A);
+
+let g = fun x -> x + 1;
+let _ = (g :> int => int);
+####
+TypeError: Function is required to be a pure identity function here:
+type T = int;
+let f = fun[A] x: A :: A -> x;
+let _ = (f :> [A]. A => A);
+              ^~~~~~~~~~~   
+let g = fun x -> x + 1;
+Note: But it may be a regular function here:
+type T = int;
+let f = fun[A] x: A :: A -> x;
+        ^~~~~~~~~~~~~~~~~~~~~  
+let _ = (f :> [A]. A => A);
+Note: Type mismatch was detected starting from this expression:
+type T = int;
+let f = fun[A] x: A :: A -> x;
+let _ = (f :> [A]. A => A);
+        ^~~~~~~~~~~~~~~~~~  
+let g = fun x -> x + 1;

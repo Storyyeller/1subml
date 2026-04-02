@@ -1,0 +1,17 @@
+let _ = fun q -> (
+    let x: any = if true then 1 end;
+    let _ = "Hello" ^ (if true then q end);
+);
+####
+TypeError: Value is required to have type str by the ^ operator expression here:
+let _ = fun q -> (
+    let x: any = if true then 1 end;
+    let _ = "Hello" ^ (if true then q end);
+                      ^~~~~~~~~~~~~~~~~~~~  
+);
+However, that value may have type any here:
+let _ = fun q -> (
+    let x: any = if true then 1 end;
+    let _ = "Hello" ^ (if true then q end);
+                      ^~~~~~~~~~~~~~~~~~~~  
+);

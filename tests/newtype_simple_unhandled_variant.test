@@ -1,0 +1,14 @@
+type foo = [`A | `B];
+
+
+let f = foo `C {};
+####
+TypeError: Unhandled variant C.
+let f = foo `C {};
+            ^~     
+Note: Variant may not be handled here:
+type foo = [`A | `B];
+           ^~~~~~~~~  
+Note: Type mismatch was detected starting from this expression:
+let f = foo `C {};
+        ^~~~~~~~~

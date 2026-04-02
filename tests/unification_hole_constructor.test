@@ -1,0 +1,24 @@
+type Foo[+T] = {x: T};
+
+let f = fun (a: _ as [+] [_]) -> (
+    a.x + 1
+);
+
+f Foo {x=32};
+f Foo {x=true};
+####
+TypeError: Value is required to have type int by the + operator expression here:
+let f = fun (a: _ as [+] [_]) -> (
+    a.x + 1
+    ^~~     
+);
+However, that value may have type bool here:
+f Foo {x=32};
+f Foo {x=true};
+         ^~~~   
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+type Foo[+T] = {x: T};
+let f = fun (a: _ as [+] [_]) -> (
+                          ^        
+    a.x + 1
+);

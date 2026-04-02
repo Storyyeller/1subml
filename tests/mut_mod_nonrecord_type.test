@@ -1,0 +1,8 @@
+mod M: int = 3;
+####
+TypeError: Type of module binding here must be a record type.
+mod M: int = 3;
+    ^           
+but it may be a non-record type here:
+mod M: int = 3;
+       ^~~

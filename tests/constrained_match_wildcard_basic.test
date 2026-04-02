@@ -1,0 +1,23 @@
+let f = fun x -> match x with 
+| (`A, _) -> 0
+| (`B, `A) -> 1
+;
+print f (`A{}, `B{});
+####
+TypeError: Unhandled variant B.
+| (`B, `A) -> 1
+;
+print f (`A{}, `B{});
+               ^~     
+Note: Variant may not be handled here. For example, the match pattern {_0: `B} may not be covered.
+let f = fun x -> match x with 
+| (`A, _) -> 0
+| (`B, `A) -> 1
+       ^~       
+;
+print f (`A{}, `B{});
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let f = fun x: _ -> match x with 
+             +++                  
+| (`A, _) -> 0
+| (`B, `A) -> 1

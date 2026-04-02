@@ -1,0 +1,16 @@
+mod M = ({
+    x=4.4 *. 1.9;
+    y=id!
+} :> {
+    type T;
+    x: T;
+    y: T -> float
+});
+
+let q = M;
+mod W = q;
+
+let _: W.T = M.x;
+let _: M.T = W.x;
+####
+

@@ -1,0 +1,5 @@
+type Foo = | A | B int;
+let f = Foo `A 0;
+let f = Foo `B 0;
+####
+

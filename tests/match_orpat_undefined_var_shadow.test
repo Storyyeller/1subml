@@ -1,0 +1,19 @@
+let y = 1;
+let f = fun x -> match x with 
+    | `A y
+    | `B    -> y
+;
+####
+SyntaxError: Undefined variable
+let f = fun x -> match x with 
+    | `A y
+    | `B    -> y
+               ^ 
+;
+Note: A binding with this name was defined previously but was hidden here:
+let y = 1;
+let f = fun x -> match x with 
+    | `A y
+         ^ 
+    | `B    -> y
+;

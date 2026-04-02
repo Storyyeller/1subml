@@ -1,0 +1,17 @@
+let f = fun x -> match x with
+| `A y when y + "bad" -> y
+| _ -> 0
+;
+####
+TypeError: Value is required to have type int by the + operator expression here:
+let f = fun x -> match x with
+| `A y when y + "bad" -> y
+                ^~~~~      
+| _ -> 0
+;
+However, that value may have type str here:
+let f = fun x -> match x with
+| `A y when y + "bad" -> y
+                ^~~~~      
+| _ -> 0
+;

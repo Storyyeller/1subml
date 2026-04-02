@@ -1,0 +1,8 @@
+let _ = 1 >=. 7.8;
+####
+TypeError: Value is required to have type float by the >=. operator expression here:
+let _ = 1 >=. 7.8;
+        ^          
+However, that value may have type int here:
+let _ = 1 >=. 7.8;
+        ^

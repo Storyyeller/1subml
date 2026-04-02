@@ -1,0 +1,11 @@
+let (a, (b, (c, d: int))) = (1, (2, (3, 4.5)));
+####
+TypeError: Value is required to have type int here:
+let (a, (b, (c, d: int))) = (1, (2, (3, 4.5)));
+                   ^~~                          
+However, that value may have type float here:
+let (a, (b, (c, d: int))) = (1, (2, (3, 4.5)));
+                                        ^~~     
+Note: Type mismatch was detected starting from this expression:
+let (a, (b, (c, d: int))) = (1, (2, (3, 4.5)));
+                            ^~~~~~~~~~~~~~~~~~

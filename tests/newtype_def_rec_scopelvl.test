@@ -1,0 +1,31 @@
+let _ = fun x -> (
+    let r = {mut x};
+
+    type rec Foo = | A int | B Foo;
+    r.x <- Foo `A 3;
+    print Foo$ r.x;
+);
+####
+TypeError: Type Foo defined here escapes its scope.
+    let r = {mut x};
+    type rec Foo = | A int | B Foo;
+             ^~~                    
+    r.x <- Foo `A 3;
+    print Foo$ r.x;
+Note: A value of this type originates here:
+    type rec Foo = | A int | B Foo;
+    r.x <- Foo `A 3;
+           ^~~       
+    print Foo$ r.x;
+);
+Note: And is consumed here after escaping the defining scope:
+    type rec Foo = | A int | B Foo;
+    r.x <- Foo `A 3;
+    print Foo$ r.x;
+          ^~~~      
+);
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let _ = fun x -> (
+    let r = {mut x: _};
+                  +++   
+    type rec Foo = | A int | B Foo;

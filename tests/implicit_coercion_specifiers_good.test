@@ -1,0 +1,25 @@
+import test2{x};
+print x.x + 1;
+
+type T = {x: int};
+let b = T {x=12};
+let m = ((T$, b) :> {type B; _0: B => {x: int}; _1: B});
+mod M implicit{B: _0 _} = m;
+print M._1.x;
+
+
+print (fun[C] implicit{C: Q _} (c: C, Q: (C => {x: int})) -> c.x) (b, T$);
+#### test2.ml
+type T = {x: int};
+let qwe = T$;
+let x = T {x=2};
+
+export {
+    type A;
+    qwe: A => {x: int};
+    x: A;
+} implicit{A: qwe _}
+####
+3
+12
+12

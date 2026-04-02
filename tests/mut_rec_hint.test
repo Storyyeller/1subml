@@ -1,0 +1,8 @@
+let f = fun x -> f x;
+####
+SyntaxError: Undefined variable
+let f = fun x -> f x;
+                 ^    
+Hint: Consider making the definition recursive like this:
+let rec f = fun x -> f x;
+    ++++

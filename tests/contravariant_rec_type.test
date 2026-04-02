@@ -1,0 +1,3 @@
+let rec f: (rec t = (t -> int)) = fun x -> 42;
+####
+

@@ -1,0 +1,6 @@
+alias Foo = constructor-of!((int) -> (any));
+
+####
+SyntaxError: constructor-of! can only be applied to constructor applications.
+alias Foo = constructor-of!((int) -> (any));
+                            ^~~~~~~~~~~~~~

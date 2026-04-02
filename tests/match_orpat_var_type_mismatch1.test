@@ -1,0 +1,23 @@
+print (match `A 3.2 with 
+    | `A y
+    | `B y: int -> y + 2
+);
+
+####
+TypeError: Value is required to have type int by the + operator expression here:
+print (match `A 3.2 with 
+    | `A y
+    | `B y: int -> y + 2
+                   ^     
+);
+However, that value may have type float here:
+print (match `A 3.2 with 
+                ^~~       
+    | `A y
+    | `B y: int -> y + 2
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+print (match `A 3.2 with 
+    | `A y: _
+          +++ 
+    | `B y: int -> y + 2
+);

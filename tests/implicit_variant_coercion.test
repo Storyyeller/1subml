@@ -1,0 +1,13 @@
+mod M implicit{T:f _} = ({
+    x=`A 1;
+    f=id!;
+} :> {
+    type T;
+    x: T;
+    f: T => [`A int];
+});
+
+let _ = match M.x with 
+| `A q -> q + 1;
+####
+

@@ -1,0 +1,11 @@
+let f = fun x -> match x with 
+    | `A y
+    | `B    -> y
+;
+####
+SyntaxError: Undefined variable
+let f = fun x -> match x with 
+    | `A y
+    | `B    -> y
+               ^ 
+;

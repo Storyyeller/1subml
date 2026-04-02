@@ -1,0 +1,8 @@
+let f = fun ({x=a; x=b}) -> a;
+####
+SyntaxError: Repeated record pattern field name.
+let f = fun ({x=a; x=b}) -> a;
+                   ^           
+Note: Conflicts with previous definition here:
+let f = fun ({x=a; x=b}) -> a;
+              ^

@@ -1,0 +1,6 @@
+alias Foo = constructor-of!([T]. (T, int) -> (T, any));
+
+let f: Foo[str; str] = fun[T] x: (T, str) :: (T, str) -> x;
+let f: Foo[any; int] = fun[T] x: (T, _) :: (T, _) -> (x._0, 12213);
+####
+

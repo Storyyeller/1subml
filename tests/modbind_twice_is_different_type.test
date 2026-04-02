@@ -1,0 +1,35 @@
+let m = ({T=id!; T$=id!} :> {
+    type T;
+    T: int -> T;
+    T$: T -> int;
+});
+
+
+mod M1 = m;
+let a = M1.T 1;
+
+mod M2 = m;
+let b = M2.T 2;
+
+print M2.T$ a, M1.T$ b;
+
+
+####
+TypeError: Value is required to have type M2.T here:
+    type T;
+    T: int -> T;
+    T$: T -> int;
+        ^         
+});
+However, that value may have type M1.T here:
+let m = ({T=id!; T$=id!} :> {
+    type T;
+    T: int -> T;
+              ^  
+    T$: T -> int;
+});
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+mod M1 = m;
+let a: _ = M1.T 1;
+     +++           
+mod M2 = m;

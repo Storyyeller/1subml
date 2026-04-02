@@ -1,0 +1,7 @@
+type Foo = [`A int];
+let f = fun Foo `A x -> x;
+####
+SyntaxError: Coercions are not allowed in function argument patterns.
+type Foo = [`A int];
+let f = fun Foo `A x -> x;
+            ^~~

@@ -1,0 +1,11 @@
+type Foo = | A;
+A 3
+####
+TypeError: Value is required to be a function by the function call expression here:
+type Foo = | A;
+A 3
+^~~ 
+However, that value may have type Foo here:
+type Foo = | A;
+A 3
+^

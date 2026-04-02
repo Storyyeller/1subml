@@ -1,0 +1,15 @@
+let id = id!;
+let _: int = id "hello";
+####
+TypeError: Value is required to have type int here:
+let id = id!;
+let _: int = id "hello";
+       ^~~               
+However, that value may have type str here:
+let id = id!;
+let _: int = id "hello";
+                ^~~~~~~  
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let id = id![_];
+            +++  
+let _: int = id "hello";

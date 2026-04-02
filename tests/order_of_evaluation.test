@@ -1,0 +1,23 @@
+
+
+let f = fun x -> (print "f", x; x);
+
+let _ = (print 1; f) (print 2; "q");
+let _ = (print 3; "qq") |> (print 4; f);
+
+let r = {mut x=1};
+
+let y = (print 5; r).x <- (print 6; "w");
+print y, r.x;
+
+
+####
+1
+2
+f q
+3
+4
+f qq
+5
+6
+1 w

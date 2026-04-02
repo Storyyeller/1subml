@@ -1,0 +1,5 @@
+let f: ([T]. T -> ([U]. U -> T/U)) = fun x -> fun y -> x;
+####
+SyntaxError: Illegal poly var pair.
+let f: ([T]. T -> ([U]. U -> T/U)) = fun x -> fun y -> x;
+                             ^~~

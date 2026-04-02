@@ -1,0 +1,3 @@
+let f = fun x: ([T; U]. int -> T/U) -> x 42;
+####
+

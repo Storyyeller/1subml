@@ -1,0 +1,8 @@
+let _ = {alias T=int; alias T=str};
+####
+SyntaxError: Repeated type alias name.
+let _ = {alias T=int; alias T=str};
+                            ^       
+Note: Conflicts with previous definition here:
+let _ = {alias T=int; alias T=str};
+               ^

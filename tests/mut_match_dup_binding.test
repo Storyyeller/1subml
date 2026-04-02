@@ -1,0 +1,14 @@
+let f = fun x -> match x with
+| (a, a) -> a
+;
+####
+SyntaxError: Repeated pattern binding name.
+let f = fun x -> match x with
+| (a, a) -> a
+      ^       
+;
+Note: Conflicts with previous definition here:
+let f = fun x -> match x with
+| (a, a) -> a
+   ^          
+;

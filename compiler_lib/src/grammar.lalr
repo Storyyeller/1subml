@@ -1,0 +1,593 @@
+// Copyright (c) 2026 Robert Grosse. All rights reserved.
+#![allow(unused_braces)]
+
+use lalrpop_util::ParseError;
+
+use super::ast; // super instead of self because lalrpop wraps this in an internal module
+use super::spans;
+
+grammar(ctx: &mut ast::ParserContext<'_, 'input>);
+
+extern {
+    type Error = (&'static str, spans::Span);
+}
+
+// Tokens ////////////////////////////////////////////////////////////
+match {
+    r"\s*" => { }, // The default whitespace skipping is disabled if an `ignore pattern` is specified
+    r"//[^\n\r]*[\n\r]*" => { }, // Skip `// comments`
+    r#"\(\*[^*]*\*+(?:[^\)*][^*]*\*+)*\)"# => { },  // Skip `(* comments *)`
+} else {
+    _
+}
+
+
+StringIdent: &'input str = r"[A-Za-z_$][\w$]*"=> <>;
+Ident: ast::StringId = StringIdent => ctx.strings.get_or_intern(<>);
+Tag: ast::StringId = "`" <Ident>;
+
+IntLiteral: String = {
+    <l: @L> <s: r"-?(?:[0-9]+)"> <r: @R> =>? {
+        let s2 = s.trim_start_matches('-');
+        if s2 != "0" && s2.starts_with("0") {
+            Err(ParseError::User {
+                error: ("SyntaxError: Numbers can't contain leading 0s", ctx.span_maker.span(l, r))
+            })
+        } else {
+            Ok(String::from(s))
+        }
+    },
+};
+FloatLiteral: String =
+    <r"-?(?:0|[1-9][0-9]*)\.[0-9]*(?:[eE]-?[0-9]+)?"> => String::from(<>);
+FloatLiteralNoDot: String =
+    <r"-?(?:0|[1-9][0-9]*)[eE]-?[0-9]+"> => String::from(<>);
+StringLiteral: String =
+    <r#""[^\\"\n\r]*(?:\\[tn'"\\][^\\"\n\r]*)*""#> => String::from(<>);
+
+
+// make sure __proto__ is not considered a valid identifier
+Illegal = "__proto__";
+
+
+// Macros ////////////////////////////////////////////////////////////
+Box<T>: Box<T> = {
+    <T> => Box::new(<>),
+}
+SepList<T, Sep>: Vec<T> = {
+    <v:(<T> Sep)*> <e:T> => {
+        let mut v = v;
+        v.push(e);
+        v
+    }
+};
+SepListOpt<T, Sep>: Vec<T> = {
+    SepList<T, Sep>,
+    => Vec::new(),
+};
+// Variants that allow an optional trailing separator. Only safe in delimited contexts
+// (e.g. inside {} or []) where the closing delimiter can't start a T.
+SepListTrail<T, Sep>: Vec<T> = {
+    <(<T> Sep)+>,
+    <v:(<T> Sep)*> <e:T> => {
+        let mut v = v;
+        v.push(e);
+        v
+    }
+};
+SepListOptTrail<T, Sep>: Vec<T> = {
+    SepListTrail<T, Sep>,
+    => Vec::new(),
+};
+Spanned<T>: spans::Spanned<T> = {
+    <l: @L> <val: T> <r: @R> => (val, ctx.span_maker.span(l, r))
+};
+
+
+
+//////////////////////////////////////////////////////////////////////
+// Types /////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+Variance: ast::types::Variance = {
+    r"[\+\-]\.?|\^" => {
+        match &<>[..1] {
+            "+" => ast::types::Variance::Covariant,
+            "-" => ast::types::Variance::Contravariant,
+            "^" => ast::types::Variance::Invariant,
+            _ => unreachable!(),
+        }
+    }
+}
+SVKind: ast::types::SVKind = {
+    Spanned<Variance> OptSKind => ast::types::SVKind::new(<>),
+}
+KindParams = "[" <SepListOpt<SVKind, ";">> "]";
+ExplicitKind: ast::types::Kind = {
+    <KindParams> => ast::types::Kind::new(<>),
+}
+OptSKind = Spanned<ExplicitKind>?;
+
+
+CovOnlyTypeDecl: ast::types::InvTypeDecl = {
+    <ty: SType> => ast::types::InvTypeDecl::new(<>),
+}
+InvTypeDecl: ast::types::InvTypeDecl = {
+    CovOnlyTypeDecl,
+    <ty: SType> "<-" <ty2: SType> => ast::types::InvTypeDecl::pair(<>),
+}
+KeyPairType: ast::types::KeyPairType = {
+    <name: Spanned<Ident>> ":" <ty: CovOnlyTypeDecl> => (name, ast::types::RecordTypeMember::Field(false, ty)),
+    "mut" <name: Spanned<Ident>> ":" <ty: InvTypeDecl> => (name, ast::types::RecordTypeMember::Field(true, ty)),
+
+    "alias" <name: Spanned<Ident>> ":" <ty: SType> => (name, ast::types::RecordTypeMember::Alias(ty)),
+    "type" <tp: PolyTypeParam> => (tp.name, ast::types::RecordTypeMember::Abstract(tp)),
+}
+RecordType: ast::types::TypeExpr = {
+    "{" <SepListOptTrail<KeyPairType, ";">> "}" => ast::types::TypeExpr::Record(<>)
+}
+
+VariantType = <Spanned<Tag>> <Box<SType>?>;
+CaseType: ast::types::TypeExpr = {
+    "[" <SepList<VariantType, "|">> "]" => ast::types::TypeExpr::Case(<>)
+}
+TupleOrParensType: ast::types::TypeExpr = {
+    "(" <SepList<SType, ",">> ")" => {
+        ast::make_tuple_type(<>, &mut ctx.strings)
+    }
+}
+
+KindAnnotation = "as" <Spanned<ExplicitKind>>;
+
+TypeArguments = {
+    "[" <SepList<InvTypeDecl, ";">> "]",
+    => Vec::new(),
+}
+PathType: ast::types::PathType = {
+    "_" => ast::types::PathType::Hole,
+    "_" "." <Spanned<Ident>> => ast::types::PathType::Placeholder(<>.0),
+    <Spanned<Ident>> => ast::types::PathType::new_single(ctx, <>.0),
+    <Spanned<Ident>> "." <Spanned<Ident>> => ast::types::PathType::ModMember(<>),
+    <Spanned<Ident>> "/" <Spanned<Ident>> => ast::types::PathType::VarPair(<>),
+}
+PathTypeWithArgs: ast::types::PathTypeWithArgs = {
+    <path: Spanned<PathType>> <annot: KindAnnotation?> <args: Spanned<TypeArguments>> => 
+        ast::types::PathTypeWithArgs::new(path, annot, args),
+}
+NamedType: ast::types::TypeExpr = {
+    <pt: PathTypeWithArgs> => pt.into_type(),
+}
+
+SimpleType: ast::types::TypeExpr = {
+    NamedType,
+    RecordType,
+    CaseType,
+    TupleOrParensType,
+
+    "constructor-of!" "(" <Box<SType>> ")" => ast::types::TypeExpr::ConstructorOf(<>),
+}
+
+
+NoFunType = SimpleType;
+SNoFunType = Spanned<NoFunType>;
+
+TypeParamAlias = "as" <Spanned<Ident>>;
+PolyTypeParam: ast::types::TypeParam = {
+    <name: Spanned<Ident>> <kind: OptSKind> <alias: TypeParamAlias?> => ast::types::TypeParam::new(name, kind, alias),
+}
+FuncTypeParam = PolyTypeParam;
+FuncTypeParamList = "[" <SepList<FuncTypeParam, ";">> "]" ".";
+FuncArrow: bool = {
+    "->" => false,
+    "=>" => true,
+}
+FuncType: ast::types::TypeExpr = {
+    <tparams: FuncTypeParamList?> <arg: Box<SNoFunType>> <is_id: FuncArrow> <ret: Box<SType>> => {
+        let base_type = ast::types::TypeExpr::Func(tparams.unwrap_or_default(), arg, ret, is_id);
+        base_type 
+    }
+}
+
+Type = {
+    NoFunType,
+    FuncType,
+    "rec" <Ident> "=" <Box<SType>> => ast::types::TypeExpr::RecursiveDef(<>),
+}
+SType = Spanned<Type>;
+
+
+
+//////////////////////////////////////////////////////////////////////
+// Expressions ///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+
+// SimpleExpr ////////////////////////////////////////////////////////
+FieldAccess = Spanned<("." <Ident>)>;
+FieldAccessExpr: ast::Expr = {
+    Box<SSimpleExpr> FieldAccess => {
+        ast::expr::field_access(<>)
+    }
+}
+
+
+TypeAscription = ":" <SType>;
+RhsEqExpr = "=" <Box<SNoSemiExpr>>;
+KeyPairExpr: ast::expr::KeyPair = {
+    <ismut: "mut"?> <name: Spanned<Ident>> <ty: TypeAscription?> <expr: RhsEqExpr?> => {
+        let ismut = ismut.is_some();
+        let expr = expr.unwrap_or_else(|| Box::new((ast::expr::variable(name.0), name.1)));
+        let member = ast::expr::RecordExprMember::Field(ismut, expr, ty);
+        (name, member)
+    },
+
+    "alias" <name: Spanned<Ident>> "=" <rhs: SType> => (name, ast::expr::RecordExprMember::Alias(rhs)),
+}
+
+Record: ast::Expr = {
+    "{" <fields: SepListOptTrail<KeyPairExpr, ";">> "}" => ast::expr::record(fields)
+}
+
+VarOrLiteral: ast::Expr = {
+    Spanned<StringIdent> => {
+        let (s, span) = <>;
+        match s {
+            "false" | "true" => ast::expr::literal(ast::expr::Literal::Bool, (String::from(s), span)),
+            _ => {
+                ast::expr::variable(ctx.strings.get_or_intern(s))
+            }
+        }
+    },
+
+    Spanned<FloatLiteral> => ast::expr::literal(ast::expr::Literal::Float, <>),
+    Spanned<FloatLiteralNoDot> => ast::expr::literal(ast::expr::Literal::Float, <>),
+    Spanned<IntLiteral> => ast::expr::literal(ast::expr::Literal::Int, <>),
+    Spanned<StringLiteral> => ast::expr::literal(ast::expr::Literal::Str, <>),
+}
+
+IdentityExpr: ast::Expr = {
+    "id!" <("[" <SType> "]")?> => ast::expr::Expr::Identity(<>),
+}
+
+
+TypeSubstitution = <Spanned<Ident>> "=" <SType>;
+TypeSubstitutions = "with" "[" <SepListTrail<TypeSubstitution, ";">> "]";
+TypeCoercion = ":>" <SType> <TypeSubstitutions?>;
+ParenTupleTypedOrCoerceExpr: ast::Expr = {
+    "(" <exprs: Spanned<SepList<SExpr, ",">>> <ascription: TypeAscription?> <coerce: TypeCoercion?> ")" => 
+        ast::expr::paren_tuple_typed_or_coerce(ctx.strings, exprs, ascription, coerce),
+}
+
+SimpleExpr = {
+    FieldAccessExpr,
+    Record,
+    VarOrLiteral,
+    ParenTupleTypedOrCoerceExpr,
+    IdentityExpr,
+
+    "begin" <Expr> "end",
+}
+SSimpleExpr = Spanned<SimpleExpr>;
+//////////////////////////////////////////////////////////////////////
+// CallExpr //////////////////////////////////////////////////////////
+Case: ast::Expr = {
+    Spanned<Tag> Box<SCallExpr> => ast::expr::case(<>),
+}
+Call: ast::Expr = {
+    Box<SSimpleExpr> Box<SCallExpr> => ast::expr::call(<>, false),
+}
+CallExpr = {
+    SimpleExpr,
+    Case,
+    Call,
+}
+SCallExpr = Spanned<CallExpr>;
+
+
+ReverseCall: ast::Expr = {
+    <arg: Box<Spanned<RevCallExpr>>> "|>" <func: Box<SCallExpr>> => ast::expr::call(func, arg, true),
+}
+RevCallExpr = {
+    CallExpr,
+    ReverseCall,
+}
+
+
+
+//////////////////////////////////////////////////////////////////////
+// Binary expressions/////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+BinOp<Left, Op, Right>: ast::Expr = {
+    <lhs: Box<Left>> <op: Op> <rhs: Box<Right>> => {
+        let (op_str, (op_ty, op_name)) = op;
+        let op_str = crate::short_str::ShortStr::new(op_str).unwrap();
+        ast::expr::binop(lhs, rhs, op_ty, op_name, op_str)
+    },
+};
+
+
+MultOpSub: (&'input str, (ast::expr::OpType, ast::expr::Op)) = {
+    <op: r"[\*/%]\.?"> => {
+        (op, match op {
+            "*" => (ast::expr::INT_OP, ast::expr::Op::Mult),
+            "/" => (ast::expr::INT_OP, ast::expr::Op::Div),
+            "%" => (ast::expr::INT_OP, ast::expr::Op::Rem),
+            "*." => (ast::expr::FLOAT_OP, ast::expr::Op::Mult),
+            "/." => (ast::expr::FLOAT_OP, ast::expr::Op::Div),
+            "%." => (ast::expr::FLOAT_OP, ast::expr::Op::Rem),
+            _ => unreachable!(),
+        })
+    }
+}
+MultOp: ast::Expr = BinOp<Spanned<MultExpr>, MultOpSub, Spanned<RevCallExpr>>;
+
+AddOpSub: (&'input str, (ast::expr::OpType, ast::expr::Op)) = {
+    <op: r"[\+\-]\.?|\^"> => {
+        (op, match op {
+            "+" => (ast::expr::INT_OP, ast::expr::Op::Add),
+            "-" => (ast::expr::INT_OP, ast::expr::Op::Sub),
+            "+." => (ast::expr::FLOAT_OP, ast::expr::Op::Add),
+            "-." => (ast::expr::FLOAT_OP, ast::expr::Op::Sub),
+            "^" => (ast::expr::STR_OP, ast::expr::Op::Add),
+            _ => unreachable!(),
+        })
+    }
+}
+AddOp: ast::Expr = BinOp<Spanned<AddExpr>, AddOpSub, Spanned<MultExpr>>;
+
+CmpOpSub: (&'input str, (ast::expr::OpType, ast::expr::Op)) = {
+    <op: r"[<>]=?\.?|[!=]="> => {
+        (op, match op {
+            "<" => (ast::expr::INT_CMP, ast::expr::Op::Lt),
+            "<=" => (ast::expr::INT_CMP, ast::expr::Op::Lte),
+            ">" => (ast::expr::INT_CMP, ast::expr::Op::Gt),
+            ">=" => (ast::expr::INT_CMP, ast::expr::Op::Gte), 
+
+            "<." => (ast::expr::FLOAT_CMP, ast::expr::Op::Lt),
+            "<=." => (ast::expr::FLOAT_CMP, ast::expr::Op::Lte),
+            ">." => (ast::expr::FLOAT_CMP, ast::expr::Op::Gt),
+            ">=." => (ast::expr::FLOAT_CMP, ast::expr::Op::Gte),
+
+            "==" => (ast::expr::ANY_CMP, ast::expr::Op::Eq),
+            "!=" => (ast::expr::ANY_CMP, ast::expr::Op::Neq),
+            _ => unreachable!(),
+        })
+    }
+}
+CmpOp: ast::Expr = BinOp<Spanned<AddExpr>, CmpOpSub, Spanned<AddExpr>>;
+
+CondOpSub: (&'input str, (ast::expr::OpType, ast::expr::Op)) = {
+    <op: r"(?:&&)|(?:\|\|)"> => {
+        (op, match op {
+            "&&" => (ast::expr::BOOL_OP, ast::expr::Op::BoolAnd),
+            "||" => (ast::expr::BOOL_OP, ast::expr::Op::BoolOr),
+            _ => unreachable!(),
+        })
+    }
+}
+CondOp: ast::Expr = BinOp<Spanned<CondExpr>, CondOpSub, Spanned<CompareExpr>>;
+
+
+MultExpr = {
+    RevCallExpr,
+    MultOp,
+}
+AddExpr = {
+    MultExpr,
+    AddOp,
+}
+CompareExpr = {
+    AddExpr,
+    CmpOp,
+}
+CondExpr = {
+    CompareExpr,
+    CondOp,
+}
+SCondExpr = Spanned<CondExpr>;
+
+//////////////////////////////////////////////////////////////////////
+// Patterns //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+PatternUnwrapHint = PathTypeWithArgs;
+KeyPairPattern: (spans::Spanned<ast::StringId>, ast::RecordPatternMember) = {
+    <name: Spanned<Ident>> "=" <pat: LetPattern> => (name, ast::RecordPatternMember::field(pat)),
+    <name: Spanned<Ident>> <ty: TypeAscription?> => {
+        let var = ast::VarPattern((Some(name.0), name.1), ty);
+        (name, ast::RecordPatternMember::field(ast::LetPattern::Var(var)))
+    }
+}
+RecordLetPatternFields: ast::RecordPatternFields = {
+    "{" <SepListOptTrail<KeyPairPattern, ";">> "}",
+    "(" <Spanned<LetPattern>> "," <SepList<Spanned<LetPattern>, ",">> ")" => {
+        ast::make_tuple_pattern_fields(<>, &mut ctx.strings)
+    }
+}
+
+
+
+VarPatName: (Option<ast::StringId>, spans::Span) = {
+    <Spanned<Ident>> => (Some(<>.0), <>.1),
+    <Spanned<"_">> => (None, <>.1),
+}
+VarPattern: ast::VarPattern = {
+    VarPatName (":" <SType>)? => ast::VarPattern(<>),
+}
+NoParenLetPattern: ast::LetPattern = {
+    VarPattern => ast::LetPattern::Var(<>),
+    Spanned<PatternUnwrapHint>? Spanned<Tag> Box<LetPattern>? => ast::LetPattern::Case(<>),
+    Spanned<PatternUnwrapHint>? Spanned<RecordLetPatternFields> ("as" <VarPattern>)? => ast::LetPattern::Record(<>),
+}
+LetPattern = {
+    NoParenLetPattern,
+    "(" <LetPattern> ")",
+}
+
+
+// Let patterns that don't allow function type annotations in trailing position.
+// These are needed for patterns which appear in a context that could be followed by "->", 
+// namely function arguments and match patterns.
+NoFunVarPattern: ast::VarPattern = {
+    VarPatName (":" <SNoFunType>)? => ast::VarPattern(<>),
+}
+NoFunNoParenLetPattern: ast::LetPattern = {
+    NoFunVarPattern => ast::LetPattern::Var(<>),
+    Spanned<PatternUnwrapHint>? Spanned<Tag> Box<NoFunLetPattern>? => ast::LetPattern::Case(<>),
+    Spanned<PatternUnwrapHint>? Spanned<RecordLetPatternFields> ("as" <NoFunVarPattern>)? => ast::LetPattern::Record(<>),
+}
+NoFunLetPattern = {
+    NoFunNoParenLetPattern,
+    "(" <LetPattern> ")",
+}
+
+//////////////////////////////////////////////////////////////////////
+// Top level expressions /////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+FieldSetExpr: ast::Expr = {
+    <Box<SSimpleExpr>> <FieldAccess> "<-" <Box<SNoSemiExpr>> => {
+        ast::expr::field_set(<>)
+    }
+}
+
+
+FuncDefTypeParamList = "[" <SepListOpt<PolyTypeParam, ";">> "]";
+ReturnTypeAscription = "::" <SNoFunType>;
+FuncDef: ast::Expr = {
+    "fun" <FuncDefTypeParamList?> <ImplicitCoercionsOpt> <Spanned<NoFunLetPattern>> <ReturnTypeAscription?> "->" <Box<SNoSemiExpr>> => ast::expr::func_def(<>),
+}
+
+
+If: ast::Expr = {
+    "if" <cond: Spanned<Box<SExpr>>> "then" <e1: Box<SExpr>> "else" <e2: Box<SNoSemiExpr>> => {
+        ast::expr::if_expr(cond, e1, Some(e2))
+    },
+    "if" <cond: Spanned<Box<SExpr>>> "then" <e1: Box<SExpr>> "end" => {
+        ast::expr::if_expr(cond, e1, None)
+    },
+}
+
+
+
+
+LoopExpr: ast::Expr = {
+    "loop" <Box<SNoSemiExpr>> => ast::expr::loop_expr(<>),
+}
+
+
+MatchArmGuard = "when" <Box<SCondExpr>>;
+MatchCase: ast::expr::MatchCase = {
+    "|" <pattern: Spanned<NoFunLetPattern>> <guard: MatchArmGuard?> => ast::expr::MatchCase{pattern, guard}
+}
+MatchArm: ast::expr::MatchArm = {
+    <cases: MatchCase+> "->" <expr: Box<SCondExpr>> => ast::expr::MatchArm{cases, expr}
+}
+MatchStart = "match" <Box<SExpr>>;
+Match: ast::Expr = {
+    <Spanned<MatchStart>> "with" <MatchArm+> => ast::expr::match_expr(<>),
+}
+
+UnsafeExpr: ast::Expr = {
+    <s: r"js!%[^%]+%"> => {
+        let s = &s[4..s.len()-1];
+        ast::Expr::Unsafe(s.to_owned())
+    }
+}
+
+NoSemiExpr = {
+    CondExpr,
+    FieldSetExpr,
+    FuncDef,
+    If,
+    LoopExpr,
+    Match,
+    UnsafeExpr,
+}
+SNoSemiExpr = Spanned<NoSemiExpr>;
+Expr: ast::Expr = {
+    <stmts: (<Statement> ";")*> <rest: SNoSemiExpr?> => {
+        if stmts.is_empty() {
+            if let Some(rest) = rest {
+                return rest.0;
+            }
+        }
+
+        ast::expr::block(stmts, rest)
+    }
+}
+SExpr = Spanned<Expr>;
+//////////////////////////////////////////////////////////////////////
+SpannedImportId: spans::Spanned<ast::ImportId> = {
+    Spanned<SepList<StringIdent, ".">> => ctx.import_id(<>)
+}
+
+
+NameAlias: ast::NameAlias = {
+    Spanned<Ident> ("as" <Spanned<Ident>>)? => ast::NameAlias::new(<>),
+}
+ImportStmtFields = "{" <SepListOptTrail<NameAlias, ";">> "}";
+ImportStmt: ast::Statement = {
+    "import" <SpannedImportId> <("as" <Spanned<Ident>>)?> => ast::full_import(ctx.strings, <>),
+    "import" <SpannedImportId> <ImportStmtFields> => ast::field_import(<>),
+}
+
+
+
+LetLHS = "let" <NoParenLetPattern> "=" <Box<SNoSemiExpr>>;
+LetRecDef = <Spanned<Ident>> <TypeAscription?> "=" <SNoSemiExpr>;
+LetRecLHS = "let" "rec" <SepList<LetRecDef, "and">>;
+
+NewtypeDefParam: ast::types::NewtypeDefParam = {
+    Spanned<Variance> PolyTypeParam => ast::types::NewtypeDefParam::new(ctx.strings, <>)
+}
+NewtypeDefTypeParamList = "[" <SepListOpt<NewtypeDefParam, ";">> "]";
+NewtypeRHS: ast::types::NewtypeRHS = {
+    SType => ast::types::NewtypeRHS::Type(<>),
+    ("|" <Spanned<Ident>> <SType?>)+ =>ast::types::NewtypeRHS::Enum(<>),
+}
+
+NewtypeDef: ast::types::NewtypeDef = {
+    <name: Spanned<Ident>> <params: NewtypeDefTypeParamList?> "=" <rhs: NewtypeRHS> => ast::types::NewtypeDef::new(ctx.strings, name, params.unwrap_or_default(), rhs)
+}
+
+NewtypeDefStmt = "type" <NewtypeDef>;
+NewtypeRecDefStmt = "type" "rec" <SepList<NewtypeDef, "and">>;
+
+
+Statement: ast::Statement = {
+    <SNoSemiExpr> => ast::Statement::Expr(<>),
+    ImportStmt,
+    <LetLHS> => ast::Statement::LetDef(<>),
+    <LetRecLHS> => ast::Statement::LetRecDef(<>),
+    
+    "mod" <Spanned<Ident>> <TypeAscription?> <ImplicitCoercionsOpt> "=" <SNoSemiExpr> => ast::Statement::ModuleDef(<>),
+
+    <NewtypeDefStmt> => ast::Statement::NewtypeDef(<>),
+    <NewtypeRecDefStmt> => ast::Statement::NewtypeRecDef(<>),
+    "print" <SepListOpt<SCondExpr, ",">> => ast::Statement::Println(<>),
+    "alias" <Spanned<Ident>> "=" <SType> => ast::Statement::TypeAlias(<>),
+
+
+    => ast::Statement::Empty,
+}
+
+
+NameOrBlank: Option<spans::Spanned<ast::StringId>> = {
+    Spanned<Ident> => Some(<>),
+    "_" => None,
+}
+ImplicitCoercion = <Spanned<Ident>> ":" <NameOrBlank> <NameOrBlank>;
+ImplicitCoercionsBody = "implicit" "{" <SepListOptTrail<ImplicitCoercion, ";">> "}";
+ImplicitCoercionsOpt: ast::ImplicitCoercions = {
+    <v: ImplicitCoercionsBody?> => ast::ImplicitCoercions(v.unwrap_or_default()),
+}
+
+Exports: ast::Exports = {
+    "export" <ty: Spanned<RecordType>> <subs: TypeSubstitutions?> <coercions: ImplicitCoercionsOpt> ";"? => {
+        let target = ast::expr::CoerceTarget{ty, substitutions: subs.unwrap_or_default()};
+        ast::Exports{target, coercions}
+    }
+}
+
+
+pub Script: ast::File = {
+   <statements: Spanned<SepList<Statement, ";">>> <exports: Exports?> => ast::File{statements, exports}
+}

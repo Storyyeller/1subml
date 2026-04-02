@@ -1,0 +1,12 @@
+let x = (
+    1;
+    2
+);
+####
+SyntaxError: The value of this expression will be ignored.
+let x = (
+    1;
+    ^  
+    2
+);
+Hint: If intentional, use let _ = ... to explicitly ignore it.

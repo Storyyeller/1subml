@@ -1,0 +1,5 @@
+type F = (int -> int);
+let f = F (fun x -> x + 1);
+print (fun[C] implicit{C: Q _} (c: C, Q: (C => (int -> int))) -> c 10) (f, F$)
+####
+11

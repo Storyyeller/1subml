@@ -1,0 +1,28 @@
+type Foo = {x:int};
+let foo = Foo {x=21};
+let _ = match (if true then {x=4} else foo) with 
+| {x} -> x * x;
+
+####
+TypeError: Incompatible types here:
+let foo = Foo {x=21};
+let _ = match (if true then {x=4} else foo) with 
+| {x} -> x * x;
+  ^~~           
+Note: The value may have type Foo here:
+type Foo = {x:int};
+let foo = Foo {x=21};
+          ^~~         
+let _ = match (if true then {x=4} else foo) with 
+| {x} -> x * x;
+However, that value may also be a record here:
+type Foo = {x:int};
+let foo = Foo {x=21};
+let _ = match (if true then {x=4} else foo) with 
+                            ^~~~~                 
+| {x} -> x * x;
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let foo = Foo {x=21};
+let _ = match (if true then {x=4} else foo) with 
+| _ {x} -> x * x;
+  ++

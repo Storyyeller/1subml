@@ -1,0 +1,8 @@
+let f = fun (a, a) -> a;
+####
+SyntaxError: Repeated variable binding in pattern
+let f = fun (a, a) -> a;
+                ^        
+Note: Name was already bound here:
+let f = fun (a, a) -> a;
+             ^

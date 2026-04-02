@@ -1,0 +1,15 @@
+mod M implicit{T:f _} = ({
+    x={a=1; b=2};
+    f=id!;
+} :> {
+    type T;
+    x: T;
+    f: T => {a: int; b: int};
+});
+
+let result = match M.x with
+| {a; b} -> a + b
+;
+print result;
+####
+3

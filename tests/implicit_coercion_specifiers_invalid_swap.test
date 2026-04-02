@@ -1,0 +1,10 @@
+type T = {x: int};
+let b = T {x=12};
+
+print (fun[C] implicit{C: _ Q} (c: C, Q: (C => {x: int})) -> c.x) (b, T$);
+
+####
+TypeError: Invalid implicit coercion definition. Input type does not match specified type.
+let b = T {x=12};
+print (fun[C] implicit{C: _ Q} (c: C, Q: (C => {x: int})) -> c.x) (b, T$);
+                            ^

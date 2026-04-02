@@ -1,0 +1,13 @@
+import M;
+let x: M.T = M.wrap 42;
+print M.unwrap x;
+#### M.ml
+let wrap = id!;
+let unwrap = id!;
+export {
+    type T;
+    wrap: int -> T;
+    unwrap: T -> int;
+};
+####
+42

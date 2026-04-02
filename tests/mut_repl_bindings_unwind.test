@@ -1,0 +1,25 @@
+#### REPL
+let x = 42;
+####
+
+#### INPUT
+let leaked = 99;
+let bad: str = x;
+####
+TypeError: Value is required to have type str here:
+let leaked = 99;
+let bad: str = x;
+         ^~~      
+However, that value may have type int here:
+let x = 42;
+        ^~  
+Note: Type mismatch was detected starting from this expression:
+let leaked = 99;
+let bad: str = x;
+               ^
+#### INPUT
+print leaked;
+####
+SyntaxError: Undefined variable
+print leaked;
+      ^~~~~~

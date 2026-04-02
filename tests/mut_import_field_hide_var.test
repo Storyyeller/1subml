@@ -1,0 +1,22 @@
+let x = 42;
+import M{x};
+print x;
+#### M.ml
+let wrap = id!;
+let unwrap = id!;
+export {
+    type x;
+    wrap: int -> x;
+    unwrap: x -> int;
+};
+####
+SyntaxError: Undefined variable
+let x = 42;
+import M{x};
+print x;
+      ^  
+Note: A binding with this name was defined previously but was hidden here:
+let x = 42;
+import M{x};
+         ^   
+print x;

@@ -1,0 +1,31 @@
+if false then 
+    import C;
+end;
+
+import E;
+import A;
+import D;
+#### A.ml
+print "A";
+import B;
+import D;
+#### B.ml
+print "B";
+import E;
+#### C.ml
+print "C";
+#### D.ml
+import F;
+import F;
+print "D";
+#### E.ml
+print "E";
+#### F.ml
+print "F";
+####
+C
+E
+B
+F
+D
+A

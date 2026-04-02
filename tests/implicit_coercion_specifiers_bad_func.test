@@ -1,0 +1,14 @@
+type T = {x: int};
+let b = T {x=12};
+
+print (fun[C] (c: C, Q: (C => {x: int})) -> c.x) (b, T$);
+
+####
+TypeError: Value is required to be a record here:
+let b = T {x=12};
+print (fun[C] (c: C, Q: (C => {x: int})) -> c.x) (b, T$);
+                                             ^~           
+However, that value may have type C here:
+let b = T {x=12};
+print (fun[C] (c: C, Q: (C => {x: int})) -> c.x) (b, T$);
+                  ^

@@ -1,0 +1,7 @@
+let f = fun x -> match x with
+| `A y -> y + 1
+| z: int -> z + 2
+;
+print f `A 10;
+####
+11

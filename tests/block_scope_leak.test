@@ -1,0 +1,7 @@
+let x = (let y = 1; y);
+print y;
+####
+SyntaxError: Undefined variable
+let x = (let y = 1; y);
+print y;
+      ^

@@ -1,0 +1,11 @@
+let x = {alias T=int};
+let y: x.T = 2;
+####
+SyntaxError: Expected module binding.
+let x = {alias T=int};
+let y: x.T = 2;
+       ^        
+Note: Variable was defined as a non-module binding here:
+let x = {alias T=int};
+    ^                  
+let y: x.T = 2;

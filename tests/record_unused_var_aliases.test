@@ -1,0 +1,24 @@
+let f = fun x -> match x with 
+| (`A, (`T, `T, _)) -> 0
+| (`A, (`T, _, `T)) -> 1
+| (`A, (_, `T, `T)) -> 2
+| (`A, (`F, `F, _)) -> 3
+| (`B, _) -> 4
+;
+
+print f (`B{}, (`T{}, `T{}, `F{}));
+####
+SyntaxError: Match expression is not exhaustive.
+let f = fun x -> match x with 
+                 ^~~~~~~       
+| (`A, (`T, `T, _)) -> 0
+| (`A, (`T, _, `T)) -> 1
+Note: For example, (`A, (_, `F, `T)) may not be covered.
+Note: That case is covered by the match pattern here, but precise exhaustiveness checking requires decomposable patterns. Consider splitting this match pattern into multiple cases.
+| (`A, (`T, _, `T)) -> 1
+| (`A, (_, `T, `T)) -> 2
+| (`A, (`F, `F, _)) -> 3
+  ^~~~~~~~~~~~~~~~~      
+| (`B, _) -> 4
+;
+Hint: Split the above case into multiple cases by adding explicit tags at position (_, (_, _, `<TAGS HERE>)).

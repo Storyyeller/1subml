@@ -1,0 +1,11 @@
+import A;
+#### A.ml
+import B;
+#### B.ml
+import C;
+#### C.ml
+import A;
+####
+SyntaxError: Circular import detected.
+import A;
+       ^

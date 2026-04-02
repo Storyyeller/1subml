@@ -1,0 +1,23 @@
+import test2{x};
+print x.x + 1;
+#### test2.ml
+type T = {x: int};
+let qwe = T$;
+let x = T {x=2};
+
+export {
+    type A;
+    qwe: A => {x: int};
+    x: A;
+}
+####
+TypeError: Value is required to be a record here:
+import test2{x};
+print x.x + 1;
+       ^~      
+However, that value may have type test2.A here:
+    type A;
+    qwe: A => {x: int};
+    x: A;
+       ^  
+}

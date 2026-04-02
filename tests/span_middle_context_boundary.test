@@ -1,0 +1,42 @@
+import M{x};
+print x;
+#### M.ml
+let x = "hello";
+let a = 1;
+let b = 2;
+let c = 3;
+let d = 4;
+let e = 5;
+export {
+    x: int;
+    a: int;
+    b: int;
+    c: int;
+    d: int;
+    e: int;
+};
+####
+TypeError: Value is required to have type int here:
+let e = 5;
+export {
+    x: int;
+       ^~~  
+    a: int;
+    b: int;
+However, that value may have type str here:
+let x = "hello";
+        ^~~~~~~  
+let a = 1;
+let b = 2;
+Note: Type mismatch was detected starting from this expression:
+let d = 4;
+let e = 5;
+export {
+       ^~
+    x: int;
+    a: int;
+... 2 lines omitted
+    d: int;
+    e: int;
+};
+~

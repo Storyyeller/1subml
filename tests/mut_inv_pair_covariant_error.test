@@ -1,0 +1,7 @@
+type Box[+T] = {v: T};
+let x: Box[int <- str] = Box {v=1};
+####
+SyntaxError: ty1 <- ty2 syntax can only be used with invariant parameters.
+type Box[+T] = {v: T};
+let x: Box[int <- str] = Box {v=1};
+                  ^~~

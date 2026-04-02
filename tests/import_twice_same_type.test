@@ -1,0 +1,18 @@
+import M{T as A};
+let a = A 1;
+import M{T as B};
+let b = B 2;
+
+import M;
+print M.T$ a, M.T$ b;
+
+#### M.ml
+let T = id!;
+let T$ = id!;
+export {
+    type T;
+    T: int -> T;
+    T$: T -> int;
+};
+####
+1 2

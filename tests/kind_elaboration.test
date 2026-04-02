@@ -1,0 +1,23 @@
+let f = fun x -> (
+    let a: _ as [+][int] = x;
+    let b: _ as [^][int] = a;
+);
+####
+TypeError: Value is required to have type _ with kind [^] here:
+let f = fun x -> (
+    let a: _ as [+][int] = x;
+    let b: _ as [^][int] = a;
+           ^~~~~~~~~~~~~      
+);
+However, that value may have type _ with kind [+] here:
+let f = fun x -> (
+    let a: _ as [+][int] = x;
+           ^~~~~~~~~~~~~      
+    let b: _ as [^][int] = a;
+);
+Note: Type mismatch was detected starting from this expression:
+let f = fun x -> (
+    let a: _ as [+][int] = x;
+    let b: _ as [^][int] = a;
+                           ^  
+);

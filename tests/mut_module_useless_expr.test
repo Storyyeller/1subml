@@ -1,0 +1,15 @@
+import M{x};
+print x;
+#### M.ml
+1;
+let x = 42;
+export {
+    x: int;
+};
+####
+SyntaxError: The value of this expression will be ignored.
+1;
+^  
+let x = 42;
+export {
+Hint: If intentional, use let _ = ... to explicitly ignore it.

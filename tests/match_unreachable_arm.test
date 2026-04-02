@@ -1,0 +1,18 @@
+let f = fun x -> match x with
+| `A -> 0
+| `B -> 1
+| `A -> 2
+;
+####
+SyntaxError: Match case is unreachable.
+| `A -> 0
+| `B -> 1
+| `A -> 2
+  ^~      
+;
+Note: All values are covered by previous match case here:
+let f = fun x -> match x with
+| `A -> 0
+  ^~      
+| `B -> 1
+| `A -> 2

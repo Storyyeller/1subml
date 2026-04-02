@@ -1,0 +1,4 @@
+let f = fun[T as U] (x: U) :: U -> x;
+print (f 42);
+####
+42

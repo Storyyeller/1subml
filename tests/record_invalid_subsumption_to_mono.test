@@ -1,0 +1,21 @@
+
+type Bar = {x: int; y: int->int};
+
+let f = fun x -> (
+    let _ = (x: {type T; x: T; y: T->T} :> Bar);
+);
+####
+TypeError: Value is required to have type int here:
+type Bar = {x: int; y: int->int};
+                            ^~~   
+let f = fun x -> (
+However, that value may have type T here:
+let f = fun x -> (
+    let _ = (x: {type T; x: T; y: T->T} :> Bar);
+                                     ^           
+);
+Note: Type mismatch was detected starting from this expression:
+let f = fun x -> (
+    let _ = (x: {type T; x: T; y: T->T} :> Bar);
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+);

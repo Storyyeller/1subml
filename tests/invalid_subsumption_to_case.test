@@ -1,0 +1,12 @@
+
+type Bar = | A;
+
+let f = fun x -> (
+    let _ = (x :> Bar);
+);
+####
+TypeError: Output type of :> expression must be a function or record type, or coercible from one.
+let f = fun x -> (
+    let _ = (x :> Bar);
+                  ^~~   
+);

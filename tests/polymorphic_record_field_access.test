@@ -1,0 +1,18 @@
+let f = fun x -> (
+    let r: {type t; x: t; f: t->t} = x;
+    print r.x;
+);
+####
+TypeError: Value is required to be a monomorphic record here:
+let f = fun x -> (
+    let r: {type t; x: t; f: t->t} = x;
+    print r.x;
+           ^~  
+);
+However, that value may be a polymorphic record here:
+let f = fun x -> (
+    let r: {type t; x: t; f: t->t} = x;
+           ^~~~~~~~~~~~~~~~~~~~~~~      
+    print r.x;
+);
+Hint: To access fields on a polymorphic record, you need to first bind it as a module. (mod M = ...)

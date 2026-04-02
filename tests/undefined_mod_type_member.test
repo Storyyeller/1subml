@@ -1,0 +1,20 @@
+mod M = ({
+    x=4.4 *. 1.9;
+    y=id!
+} :> {
+    type T;
+    x: T;
+    y: T -> float
+});
+
+let _: M.W = M.x;
+####
+TypeError: Undefined module type member:
+});
+let _: M.W = M.x;
+         ^        
+Note: Module was defined here:
+mod M = ({
+    ^      
+    x=4.4 *. 1.9;
+    y=id!

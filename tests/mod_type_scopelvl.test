@@ -1,0 +1,41 @@
+let r = {mut x=`None 0};
+
+
+mod M = ({x=4; t=id!; t$=id!} :> {
+    type t;
+    x: t;
+    t: int -> t;
+    t$: t -> int;
+});
+
+r.x <- `Some M.x;
+
+
+match r.x with 
+| `Some t: M.t
+| _ -> ()
+;
+
+
+####
+TypeError: Type M.t defined here escapes its scope.
+mod M = ({x=4; t=id!; t$=id!} :> {
+    ^                              
+    type t;
+    x: t;
+Note: A value of this type originates here:
+mod M = ({x=4; t=id!; t$=id!} :> {
+    type t;
+    x: t;
+       ^  
+    t: int -> t;
+    t$: t -> int;
+Note: And is consumed here after escaping the defining scope:
+match r.x with 
+| `Some t: M.t
+           ^~~ 
+| _ -> ()
+;
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let r = {mut x: _=`None 0};
+              +++

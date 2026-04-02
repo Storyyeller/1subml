@@ -1,0 +1,5 @@
+let _ = fun[C] implicit{C: Q _;} Q: (C => any) -> 0;
+####
+TypeError: Invalid implicit coercion definition. Output type of unwrap coercion must be a function, record, variant, or never.
+let _ = fun[C] implicit{C: Q _;} Q: (C => any) -> 0;
+                           ^

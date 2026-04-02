@@ -1,0 +1,23 @@
+let f = fun x -> match x with
+| {tag = `A; val = v} -> v + 1
+| {tag = `B; val = v} -> v + 2
+;
+print f {tag = `A 0; val = "hello"};
+####
+TypeError: Value is required to have type int by the + operator expression here:
+let f = fun x -> match x with
+| {tag = `A; val = v} -> v + 1
+| {tag = `B; val = v} -> v + 2
+                         ^     
+;
+print f {tag = `A 0; val = "hello"};
+However, that value may have type str here:
+| {tag = `B; val = v} -> v + 2
+;
+print f {tag = `A 0; val = "hello"};
+                           ^~~~~~~   
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let f = fun x: _ -> match x with
+             +++                 
+| {tag = `A; val = v} -> v + 1
+| {tag = `B; val = v} -> v + 2

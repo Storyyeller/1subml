@@ -1,0 +1,7 @@
+let rec f = fun x -> x + 1;
+print x;
+####
+SyntaxError: Undefined variable
+let rec f = fun x -> x + 1;
+print x;
+      ^

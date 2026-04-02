@@ -1,0 +1,6 @@
+let _ = fun x -> (
+    let y = (x: [T as A]. A -> [T as B]. B -> A);
+    (y: [T]. T -> any -> T)
+);
+####
+

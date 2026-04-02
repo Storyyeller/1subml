@@ -1,0 +1,11 @@
+let rec f: (int -> int) = fun (x: str) -> if x == "" then 1 else 0;
+####
+TypeError: Value is required to have type str here:
+let rec f: (int -> int) = fun (x: str) -> if x == "" then 1 else 0;
+                                  ^~~                               
+However, that value may have type int here:
+let rec f: (int -> int) = fun (x: str) -> if x == "" then 1 else 0;
+            ^~~                                                     
+Note: Type mismatch was detected starting from this expression:
+let rec f: (int -> int) = fun (x: str) -> if x == "" then 1 else 0;
+           ^~~~~~~~~~~~

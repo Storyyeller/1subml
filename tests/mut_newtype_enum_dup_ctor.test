@@ -1,0 +1,8 @@
+type Bad = | A int | A str;
+####
+SyntaxError: Repeated variant constructor name.
+type Bad = | A int | A str;
+                     ^      
+Note: Conflicts with previous definition here:
+type Bad = | A int | A str;
+             ^

@@ -1,0 +1,21 @@
+#### REPL
+let x = 42;
+####
+
+#### INPUT
+let y = 99;
+####
+
+#### INPUT
+let bad: str = 1;
+####
+TypeError: Value is required to have type str here:
+let bad: str = 1;
+         ^~~      
+However, that value may have type int here:
+let bad: str = 1;
+               ^
+#### INPUT
+print x;
+####
+42

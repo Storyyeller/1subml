@@ -1,0 +1,28 @@
+type A[+T] = {x: T};
+type B[-T; +U] = {f: T -> U};
+let x = if true then A {x=1} else B {f = fun x -> x};
+print x.x;
+####
+TypeError: Incompatible types here:
+type B[-T; +U] = {f: T -> U};
+let x = if true then A {x=1} else B {f = fun x -> x};
+print x.x;
+       ^~  
+Note: The value may have type A here:
+type A[+T] = {x: T};
+type B[-T; +U] = {f: T -> U};
+let x = if true then A {x=1} else B {f = fun x -> x};
+                     ^                                
+print x.x;
+However, that value may also have type B here:
+type A[+T] = {x: T};
+type B[-T; +U] = {f: T -> U};
+let x = if true then A {x=1} else B {f = fun x -> x};
+                                  ^                   
+print x.x;
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+type A[+T] = {x: T};
+type B[-T; +U] = {f: T -> U};
+let x: _ = if true then A {x=1} else B {f = fun x -> x};
+     +++                                                 
+print x.x;

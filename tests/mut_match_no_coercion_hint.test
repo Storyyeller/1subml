@@ -1,0 +1,31 @@
+mod M implicit{T:f _} = ({
+    x=`A 1;
+    f=id!;
+} :> {
+    type T;
+    x: T;
+    f: T => [`A int];
+});
+
+let result = match M.x with
+| _ `A q -> q + 1
+;
+####
+TypeError: Value is required to be a variant here:
+let result = match M.x with
+| _ `A q -> q + 1
+    ^~            
+;
+However, that value may have type M.T here:
+} :> {
+    type T;
+    x: T;
+       ^  
+    f: T => [`A int];
+});
+Note: Type mismatch was detected starting from this expression:
+});
+let result = match M.x with
+                    ^~      
+| _ `A q -> q + 1
+;

@@ -1,0 +1,17 @@
+let f = fun x -> match x with
+| `A -> 0
+| (a, b) -> a
+;
+####
+SyntaxError: Inconsistent match patterns. The input is required to be a record here:
+let f = fun x -> match x with
+| `A -> 0
+| (a, b) -> a
+  ^~~~~~      
+;
+Note: But it is also required to be a variant here:
+let f = fun x -> match x with
+| `A -> 0
+  ^~      
+| (a, b) -> a
+;

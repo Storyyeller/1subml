@@ -1,0 +1,11 @@
+let f = fun x -> x;
+mod M = f {x=1};
+####
+TypeError: Module binding must have a known type.
+let f = fun x -> x;
+mod M = f {x=1};
+    ^            
+Hint: Consider adding an explicit type annotation here:
+let f = fun x -> x;
+mod M: _ = f {x=1};
+     +++

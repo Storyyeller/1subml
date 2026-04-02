@@ -1,0 +1,7 @@
+//let _ = fun[C] implicit{C: _ Q} (Q: ({x: int} => C), R: (C => {x: int})) -> 0;
+let _ = fun[C[+]] implicit{C: _ Q} (Q: ([T]. {x: T} -> C[T]), R: ([T]. C[T] => {x: T})) -> 0;
+####
+TypeError: Invalid implicit coercion definition. Not a pure identity function.
+//let _ = fun[C] implicit{C: _ Q} (Q: ({x: int} => C), R: (C => {x: int})) -> 0;
+let _ = fun[C[+]] implicit{C: _ Q} (Q: ([T]. {x: T} -> C[T]), R: ([T]. C[T] => {x: T})) -> 0;
+                                ^

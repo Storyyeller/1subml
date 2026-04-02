@@ -1,0 +1,25 @@
+type T = {x: int};
+let b = T {x=12};
+let m = ((T$, b) :> {type B; _0: B => {x: int}; _1: B});
+mod M = m;
+print M._1.x;
+
+
+####
+TypeError: Value is required to be a record here:
+let m = ((T$, b) :> {type B; _0: B => {x: int}; _1: B});
+mod M = m;
+print M._1.x;
+          ^~  
+However, that value may have type M.B here:
+type T = {x: int};
+let b = T {x=12};
+let m = ((T$, b) :> {type B; _0: B => {x: int}; _1: B});
+                                                    ^    
+mod M = m;
+print M._1.x;
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let m = ((T$, b) :> {type B; _0: B => {x: int}; _1: B});
+mod M = m;
+print (M._1: _).x;
+      +    ++++

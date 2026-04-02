@@ -1,0 +1,249 @@
+<html>
+    <meta charset="utf-8">
+    <head>
+        <title>1SubML Demo</title>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                background: #1e1e1e;
+            }
+            onesubml-demo {
+                display: block;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <noscript><em><strong>Error: This demo requires Javascript to run.</strong></em></noscript>
+        <onesubml-demo>
+            <template shadowrootmode="open">
+                <style>
+                    :host {
+                        --bg-primary: #1e1e1e;
+                        --bg-secondary: #252526;
+                        --bg-hover: #2a2d2e;
+                        --bg-active: #1e1e1e;
+                        --bg-inactive: #2d2d2d;
+                        --text-primary: #d4d4d4;
+                        --text-secondary: #858585;
+                        --accent: #007acc;
+                        --accent-hover: #1a8ad4;
+                        --error-bg: #5a1d1d;
+                        --border: #3c3c3c;
+                        --font-mono: 'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace;
+
+                        display: block;
+                        height: 100%;
+                    }
+
+                    #container {
+                        height: 100%;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        font-family: var(--font-mono);
+                        font-size: 14px;
+                        color: var(--text-primary);
+                        background: var(--bg-primary);
+                    }
+                    #container.loading {
+                        opacity: 0.85;
+                    }
+
+                    /* Loading overlay */
+                    #loading {
+                        position: absolute;
+                        top: 15%;
+                        left: 12%;
+                        font-size: 16px;
+                        color: var(--text-secondary);
+                    }
+
+                    /* Left pane: tabs + editor + button */
+                    #pane1 {
+                        display: flex;
+                        flex-direction: column;
+                        border-right: 1px solid var(--border);
+                        overflow: hidden;
+                    }
+
+                    /* Tab bar */
+                    #tab-bar {
+                        display: flex;
+                        align-items: stretch;
+                        background: var(--bg-secondary);
+                        border-bottom: 1px solid var(--border);
+                        min-height: 35px;
+                        flex-shrink: 0;
+                        overflow-x: auto;
+                    }
+                    .tab {
+                        display: flex;
+                        align-items: center;
+                        padding: 0 12px;
+                        cursor: pointer;
+                        color: var(--text-secondary);
+                        border-right: 1px solid var(--border);
+                        user-select: none;
+                        white-space: nowrap;
+                        font-size: 13px;
+                        gap: 6px;
+                    }
+                    .tab:hover {
+                        background: var(--bg-hover);
+                    }
+                    .tab.active {
+                        background: var(--bg-active);
+                        color: var(--text-primary);
+                    }
+                    .tab .close {
+                        font-size: 16px;
+                        line-height: 1;
+                        color: var(--text-secondary);
+                        cursor: pointer;
+                        visibility: hidden;
+                        padding: 0 2px;
+                        border-radius: 3px;
+                    }
+                    .tab:hover .close, .tab.active .close {
+                        visibility: visible;
+                    }
+                    .tab .close:hover {
+                        background: rgba(255, 255, 255, 0.1);
+                        color: var(--text-primary);
+                    }
+                    #new-tab {
+                        background: none;
+                        border: none;
+                        color: var(--text-secondary);
+                        cursor: pointer;
+                        font-size: 18px;
+                        padding: 0 10px;
+                        line-height: 35px;
+                    }
+                    #new-tab:hover {
+                        color: var(--text-primary);
+                        background: var(--bg-hover);
+                    }
+                    .tab-rename-input {
+                        background: var(--bg-primary);
+                        color: var(--text-primary);
+                        border: 1px solid var(--accent);
+                        font-family: var(--font-mono);
+                        font-size: 13px;
+                        padding: 0 4px;
+                        outline: none;
+                        width: 80px;
+                    }
+
+                    /* Editor container */
+                    #editor-container {
+                        flex: 1;
+                        overflow: hidden;
+                    }
+                    #editor-container .cm-editor {
+                        height: 100%;
+                    }
+                    #editor-container .cm-scroller {
+                        overflow: auto;
+                    }
+
+                    /* Compile button */
+                    #compile-and-run {
+                        background: var(--accent);
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        cursor: pointer;
+                        font-family: var(--font-mono);
+                        font-size: 13px;
+                        flex-shrink: 0;
+                    }
+                    #compile-and-run:hover {
+                        background: var(--accent-hover);
+                    }
+
+                    /* Right pane: output + REPL */
+                    #pane2 {
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                    }
+
+                    #output {
+                        flex: 1;
+                        overflow-y: auto;
+                        padding: 8px;
+                    }
+
+                    #container pre {
+                        white-space: pre-wrap;
+                        overflow-wrap: anywhere;
+                        margin: 0;
+                        padding: 2px 0;
+                    }
+                    #container .error {
+                        background: var(--error-bg);
+                        padding: 4px 6px;
+                        border-radius: 2px;
+                    }
+
+                    #container form {
+                        margin: 0;
+                    }
+                    #input-line {
+                        display: flex;
+                        border-top: 1px solid var(--border);
+                        padding: 4px 8px;
+                        align-items: center;
+                        flex-shrink: 0;
+                    }
+                    #prompt {
+                        flex-grow: 1;
+                        background: transparent;
+                        color: var(--text-primary);
+                        border: 0;
+                        font-family: var(--font-mono);
+                        font-size: 14px;
+                        outline: none;
+                    }
+                    #prompt::placeholder {
+                        color: var(--text-secondary);
+                    }
+                    #space-below-prompt {
+                        flex-grow: 1;
+                        background: var(--bg-primary);
+                        cursor: text;
+                    }
+                </style>
+
+
+                <div id="container" class="loading">
+                    <div id="loading">Loading, please wait...</div>
+
+                    <div id="pane1">
+                        <div id="tab-bar">
+                            <button id="new-tab" title="New file">+</button>
+                        </div>
+                        <div id="editor-container"></div>
+                        <button id="compile-and-run" type="button">Compile and run</button>
+                    </div>
+
+                    <div id="pane2">
+                        <div id="output"></div>
+
+                        <form id="rhs-form">
+                            <pre id="input-line">&gt;&gt; <input id="prompt" type="text" autocomplete="off" placeholder="Enter code here or to the left" disabled></pre>
+                        </form>
+
+                        <div id="space-below-prompt"></div>
+                    </div>
+                </div>
+            </template>
+        </onesubml-demo>
+    </body>
+</html>
+
+<script src='js_runtime.js'></script>
+<script type="module" src='demo.js'></script>

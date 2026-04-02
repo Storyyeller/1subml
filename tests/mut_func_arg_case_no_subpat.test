@@ -1,0 +1,4 @@
+let f = fun `Foo -> 42;
+print f (`Foo "hello");
+####
+42

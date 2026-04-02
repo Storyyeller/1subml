@@ -1,0 +1,8 @@
+type Foo = int;
+
+let _ = ({Foo} :> {
+    type T;
+    Foo: int -> T;
+});
+####
+

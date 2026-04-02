@@ -1,0 +1,18 @@
+let f = fun x -> match x with 
+    | `A (x, y)
+    | `B y -> y
+;
+print f `A (1, 2);
+print f `B (1, 2);
+
+let f = fun x -> match x with 
+    | `A y when y == 2
+    | `A    -> x
+;
+print f `A 2;
+print f `A "";
+####
+2
+(1, 2)
+A 2
+A ""

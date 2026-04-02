@@ -1,0 +1,6 @@
+let f = fun x -> match x with
+| (a, b) as c -> c
+;
+print f (1, 2);
+####
+(1, 2)

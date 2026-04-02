@@ -1,0 +1,8 @@
+type Ref[^R] = {get: {} -> R; set: R -> {}};
+
+let use_ref = fun getter: ([T; U]. Ref[T/U] -> T/U) -> (
+    let r = ({get = fun _ -> 42; set = fun _ -> {}} :> Ref[int]);
+    getter r
+);
+####
+

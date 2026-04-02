@@ -1,0 +1,12 @@
+let r = {mut x=1; mut y=1};
+
+print (loop (if r.x < 10 then 
+    r.x <- r.x + 1;
+    r.y <- r.y * 2;
+    `Continue 0
+else 
+    `Break r.y 
+));
+
+####
+512

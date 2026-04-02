@@ -1,0 +1,8 @@
+let _: {type t; alias q:(t, bool)} = {};
+####
+TypeError: Value is required to be a polymorphic record here:
+let _: {type t; alias q:(t, bool)} = {};
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~       
+However, that value may be a monomorphic record here:
+let _: {type t; alias q:(t, bool)} = {};
+                                     ^~

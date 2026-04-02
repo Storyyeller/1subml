@@ -1,0 +1,7 @@
+type Foo = int -> int;
+
+let f = fun x -> (
+    let _ = (x: [T]. T -> T :> Foo);
+);
+####
+

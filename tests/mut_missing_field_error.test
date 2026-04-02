@@ -1,0 +1,15 @@
+let r = {x = 1};
+print r.y;
+####
+TypeError: Missing field y.
+let r = {x = 1};
+print r.y;
+       ^~  
+Note: Field is required here:
+let r = {x = 1};
+print r.y;
+       ^~  
+Note: But the record is defined without that field here:
+let r = {x = 1};
+        ^~~~~~~  
+print r.y;

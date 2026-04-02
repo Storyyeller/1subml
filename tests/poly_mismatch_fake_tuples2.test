@@ -1,0 +1,18 @@
+let f = fun[T] x: T :: {_1: T; _2: T; _3: T} -> (x,x,x,x,x,x,x,x,x,x,x,);
+
+let _: ([T]. T -> {_0: T})
+    = f;
+####
+TypeError: Value is required to have type [T]. T -> {_0: T} here:
+let f = fun[T] x: T :: {_1: T; _2: T; _3: T} -> (x,x,x,x,x,x,x,x,x,x,x,);
+let _: ([T]. T -> {_0: T})
+       ^~~~~~~~~~~~~~~~~~~ 
+    = f;
+However, that value may have type [T]. T -> {_1: T; _2: T; _3: T} here:
+let f = fun[T] x: T :: {_1: T; _2: T; _3: T} -> (x,x,x,x,x,x,x,x,x,x,x,);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+let _: ([T]. T -> {_0: T})
+Note: Type mismatch was detected starting from this expression:
+let _: ([T]. T -> {_0: T})
+    = f;
+      ^

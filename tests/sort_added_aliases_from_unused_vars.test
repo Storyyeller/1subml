@@ -1,0 +1,3 @@
+let _ = fun x : {type T; type A; f: T->T; a: A; alias B:int} :: {type T; f: T->T; a: any; alias A: any; alias B:int} -> x;
+####
+

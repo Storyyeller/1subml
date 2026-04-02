@@ -1,0 +1,5 @@
+let _ = fun[C[+]] implicit{C: _ Q} Q: ([T; W]. {x: int} => C[any]) -> 0;
+####
+TypeError: Invalid implicit coercion definition. Input type does not handle all possible parameter types.
+let _ = fun[C[+]] implicit{C: _ Q} Q: ([T; W]. {x: int} => C[any]) -> 0;
+                                ^

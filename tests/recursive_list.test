@@ -1,0 +1,6 @@
+let rec make_list = fun i -> if i == 0 then `None 0 else `Some (i, make_list (i - 1));
+let ml: (int -> rec t=[`None | `Some (int, t)]) = make_list;
+
+print ml 10;
+####
+Some(10, Some(9, Some(8, Some(7, Some(6, Some(5, Some(4, Some(3, Some(2, Some(1, ...))))))))))

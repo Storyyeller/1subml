@@ -1,0 +1,7 @@
+import A;
+#### A.ml
+import A;
+####
+SyntaxError: Circular import detected.
+import A;
+       ^

@@ -1,0 +1,3 @@
+let _ = fun x : ([T]. T -> {a: (T, int); b: (str, T)}) :: ([T]. T -> {b: (str, T); a: (T, int)}) -> x;
+####
+

@@ -1,0 +1,10 @@
+type T = {x: int};
+let b = T {x=12};
+
+let _ = fun[C] implicit{C: Q _} (c: C, Q: (C => int)) -> c.x;
+
+####
+TypeError: Invalid implicit coercion definition. Output type of unwrap coercion must be a function, record, variant, or never.
+let b = T {x=12};
+let _ = fun[C] implicit{C: Q _} (c: C, Q: (C => int)) -> c.x;
+                           ^

@@ -1,0 +1,9 @@
+type Wrap[^R] = {get: int -> R; set: R -> int};
+
+let make = fun[T] (get: (int -> T), set: (T -> int)) :: Wrap[T] -> (
+    {get; set} :> Wrap[_]
+);
+let r = make ((fun x -> x), (fun x -> x));
+print r.get 42
+####
+42

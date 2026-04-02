@@ -1,0 +1,8 @@
+let _ = {x=1; x=2};
+####
+SyntaxError: Repeated field name.
+let _ = {x=1; x=2};
+              ^     
+Note: Conflicts with previous definition here:
+let _ = {x=1; x=2};
+         ^

@@ -1,0 +1,24 @@
+type A = int -> int;
+let x = if true then A (fun y -> y) else (fun y -> y);
+x 42
+####
+TypeError: Incompatible types here:
+type A = int -> int;
+let x = if true then A (fun y -> y) else (fun y -> y);
+x 42
+^~~~ 
+Note: The value may have type A here:
+type A = int -> int;
+let x = if true then A (fun y -> y) else (fun y -> y);
+                     ^                                 
+x 42
+However, that value may also be a function here:
+type A = int -> int;
+let x = if true then A (fun y -> y) else (fun y -> y);
+                                         ^~~~~~~~~~~~  
+x 42
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+type A = int -> int;
+let x: _ = if true then A (fun y -> y) else (fun y -> y);
+     +++                                                  
+x 42

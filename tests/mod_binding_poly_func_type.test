@@ -1,0 +1,12 @@
+let f = fun[T] x: T :: T -> x;
+
+mod M = f;
+####
+TypeError: Type of module binding here must be a record type.
+let f = fun[T] x: T :: T -> x;
+mod M = f;
+    ^      
+but it may be a function type here:
+let f = fun[T] x: T :: T -> x;
+        ^~~~~~~~~~~~~~~~~~~~~  
+mod M = f;

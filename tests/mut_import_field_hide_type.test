@@ -1,0 +1,19 @@
+type x = int;
+import M{x};
+let y: x = 1;
+#### M.ml
+let x = 42;
+export {
+    x: int;
+};
+####
+SyntaxError: Undefined type
+type x = int;
+import M{x};
+let y: x = 1;
+       ^      
+Note: A binding with this name was defined previously but was hidden here:
+type x = int;
+import M{x};
+         ^   
+let y: x = 1;

@@ -1,0 +1,8 @@
+type Bad[-T] = {v: T};
+####
+SyntaxError: Type parameter 'T' is used covariantly here:
+type Bad[-T] = {v: T};
+                   ^   
+Note: But it is declared as contravariant here:
+type Bad[-T] = {v: T};
+         ^

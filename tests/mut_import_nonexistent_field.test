@@ -1,0 +1,10 @@
+import M{nonexistent};
+#### M.ml
+let x = 1;
+export {
+    x: int;
+};
+####
+ImportError: Module has no value or type member with this name:
+import M{nonexistent};
+         ^~~~~~~~~~~

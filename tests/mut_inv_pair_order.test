@@ -1,0 +1,19 @@
+type Ref[^T] = {mut v: T};
+let r = Ref {mut v = 42};
+let x: Ref[int <- str] = r;
+####
+TypeError: Value is required to have type int here:
+type Ref[^T] = {mut v: T};
+let r = Ref {mut v = 42};
+let x: Ref[int <- str] = r;
+           ^~~              
+However, that value may have type str here:
+type Ref[^T] = {mut v: T};
+let r = Ref {mut v = 42};
+let x: Ref[int <- str] = r;
+                  ^~~       
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+type Ref[^T] = {mut v: T};
+let r = Ref {mut v: _ = 42};
+                  +++        
+let x: Ref[int <- str] = r;

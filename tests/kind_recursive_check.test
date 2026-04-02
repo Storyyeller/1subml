@@ -1,0 +1,11 @@
+type HK[+T[+[+]]] = {v: int};
+let x: HK as [+[+[+; -]]] = HK {v = 1};
+####
+KindError: Type constructor has 1 parameters here:
+type HK[+T[+[+]]] = {v: int};
+            ^~~               
+let x: HK as [+[+[+; -]]] = HK {v = 1};
+Note: But it is expected to have 2 parameters here:
+type HK[+T[+[+]]] = {v: int};
+let x: HK as [+[+[+; -]]] = HK {v = 1};
+                 ^~~~~~

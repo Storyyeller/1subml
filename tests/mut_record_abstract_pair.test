@@ -1,0 +1,5 @@
+let f = fun x: {type T; type U; v: T/U} -> x.v;
+####
+SyntaxError: Illegal poly var pair.
+let f = fun x: {type T; type U; v: T/U} -> x.v;
+                                   ^~~

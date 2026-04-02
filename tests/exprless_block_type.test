@@ -1,0 +1,11 @@
+let x: any = ();
+let _ = () ^ "Hello";
+####
+TypeError: Value is required to have type str by the ^ operator expression here:
+let x: any = ();
+let _ = () ^ "Hello";
+        ^~            
+However, that value may have type any here:
+let x: any = ();
+let _ = () ^ "Hello";
+        ^~

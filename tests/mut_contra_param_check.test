@@ -1,0 +1,22 @@
+type Box[-T] = T -> int;
+let wrap = fun[T] f: (T -> int) :: Box[T] -> Box f;
+let use_box = fun b: Box[str] -> b "hello";
+
+let wrong: Box[int] = wrap (fun x -> x + 1);
+print use_box wrong;
+####
+TypeError: Value is required to have type int here:
+let use_box = fun b: Box[str] -> b "hello";
+let wrong: Box[int] = wrap (fun x -> x + 1);
+               ^~~                           
+print use_box wrong;
+However, that value may have type str here:
+type Box[-T] = T -> int;
+let wrap = fun[T] f: (T -> int) :: Box[T] -> Box f;
+let use_box = fun b: Box[str] -> b "hello";
+                         ^~~                
+let wrong: Box[int] = wrap (fun x -> x + 1);
+Note: Type mismatch was detected starting from this expression:
+let wrong: Box[int] = wrap (fun x -> x + 1);
+print use_box wrong;
+      ^~~~~~~~~~~~~

@@ -1,0 +1,12 @@
+let f = fun x -> match x with 
+| `A y when y == 2
+| `B -> "A 2 or B"
+| `A
+| `C -> "A _ or C"
+;
+
+print f `A 2; // "A 2 or B"
+print f `A 0; // "A _ or C"
+####
+A 2 or B
+A _ or C

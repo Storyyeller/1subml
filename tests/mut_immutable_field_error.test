@@ -1,0 +1,15 @@
+let r = {x = 1};
+r.x <- 2;
+####
+TypeError: Cannot set immutable field x.
+let r = {x = 1};
+r.x <- 2;
+ ^~       
+Note: Field is required to be mutable here:
+let r = {x = 1};
+r.x <- 2;
+ ^~       
+Note: But the record is defined with that field immutable here:
+let r = {x = 1};
+         ^       
+r.x <- 2;

@@ -1,0 +1,8 @@
+let _ = fun[C[+]] implicit{C: _ Q; C: _ Q} Q: ([T; W]. {x: int} => C[never]) -> 0;
+####
+SyntaxError: Repeated implicit coercion name.
+let _ = fun[C[+]] implicit{C: _ Q; C: _ Q} Q: ([T; W]. {x: int} => C[never]) -> 0;
+                                   ^                                               
+Note: Conflicts with previous definition here:
+let _ = fun[C[+]] implicit{C: _ Q; C: _ Q} Q: ([T; W]. {x: int} => C[never]) -> 0;
+                           ^

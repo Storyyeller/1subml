@@ -1,0 +1,10 @@
+type T = {x: int};
+let b = T {x=12};
+
+let _ = fun[C] implicit{C: Q E} (c: C, Q: (C => {x:int}), E: (never => C)) -> c.x;
+
+####
+TypeError: Invalid implicit coercion definition. Output type of wrap coercion must be a function or record.
+let b = T {x=12};
+let _ = fun[C] implicit{C: Q E} (c: C, Q: (C => {x:int}), E: (never => C)) -> c.x;
+                             ^

@@ -1,0 +1,33 @@
+let _ = fun x -> (
+    type Foo = | A | B _;
+    let b = B A;
+    match b with 
+    | `A -> ()
+    | `B b -> Foo$ b 
+);
+####
+TypeError: Type Foo defined here escapes its scope.
+let _ = fun x -> (
+    type Foo = | A | B _;
+         ^~~              
+    let b = B A;
+    match b with 
+Note: A value of this type originates here:
+let _ = fun x -> (
+    type Foo = | A | B _;
+    let b = B A;
+              ^  
+    match b with 
+    | `A -> ()
+Note: And is consumed here after escaping the defining scope:
+    match b with 
+    | `A -> ()
+    | `B b -> Foo$ b 
+              ^~~~    
+);
+Hint: To narrow down the cause of the type mismatch, consider adding an explicit type annotation here:
+let _ = fun x -> (
+    type Foo = | A | B _;
+                       ^  
+    let b = B A;
+    match b with

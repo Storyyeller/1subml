@@ -1,0 +1,6 @@
+type F = int -> int;
+let f = F (fun x -> x + 1);
+let g = (f :> int -> int);
+print g 10
+####
+11

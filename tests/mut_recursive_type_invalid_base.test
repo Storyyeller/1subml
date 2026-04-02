@@ -1,0 +1,5 @@
+let x: (rec t = t) = 42;
+####
+SyntaxError: Recursive types must be defined as a constructor application, function, record, or variant.
+let x: (rec t = t) = 42;
+                ^

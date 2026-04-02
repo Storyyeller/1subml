@@ -1,0 +1,16 @@
+type Foo[-T] = T -> float;
+
+let y = Foo$ 3;
+####
+TypeError: Value is required to have type Foo here:
+type Foo[-T] = T -> float;
+let y = Foo$ 3;
+        ^~~~    
+However, that value may have type int here:
+type Foo[-T] = T -> float;
+let y = Foo$ 3;
+             ^  
+Note: Type mismatch was detected starting from this expression:
+type Foo[-T] = T -> float;
+let y = Foo$ 3;
+        ^~~~~~
