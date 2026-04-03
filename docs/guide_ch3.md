@@ -189,7 +189,7 @@ The inferred type for U's replacement is `int`, leading to `(T, int) -> (T, int)
 
 ## Existential types
 
-*Existential types* are the mirror image of generic types. A generic function has type parameters which can be substitued for any type by the caller. An existential type by contrast has type parameters representing *some* unknown type that can differ on a per-value basis.
+*Existential types* are the mirror image of generic types. A generic function has type parameters which can be substituted for any type by the caller. An existential type by contrast has type parameters representing *some* unknown type that can differ on a per-value basis.
 
 In 1SubML, existential types are tied to records. Existential record type parameters are written with `type name;`, e.g. `{type t; zero: t; plus_one: t->t}`. The only way to create values of an existential type is to use the subsumption operator to convert from an ordinary record type:
 
@@ -280,7 +280,7 @@ let f: M.t -> M.t = M.plus_one;
 
 ## Record type alias members
 
-In 1SubML, record types can contain type alias members. The most common way to create record alias members is via pinning existential types as shown above, but you can also added them explicitly:
+In 1SubML, record types can contain type alias members. The most common way to create record alias members is via pinning existential types as shown above, but you can also add them explicitly:
 
 ```ml
 mod M = {
@@ -357,7 +357,7 @@ Additionally, only the *top level* of the type has to be known, since this is wh
 
 In 1SubML, there are no separate module and value sublanguages like there are in OCaml. Module values are ordinary record values and module types are ordinary record types. `mod` bindings are just a specialized variant of `let` bindings that additionally pin existential type parameters as described previously.
 
-However, there is one additionally difference. In order to prevent mistakes and confusing behavior, the 1SubML compiler enforces that record alias members (`M.t`) can only be accessed on variables bound with `mod`:
+However, there is one additional difference. In order to prevent mistakes and confusing behavior, the 1SubML compiler enforces that record alias members (`M.t`) can only be accessed on variables bound with `mod`:
 
 ```ml
 mod M1 = {alias foo=int};

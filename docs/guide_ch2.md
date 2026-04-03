@@ -405,7 +405,7 @@ let Some = fun x: int :: opt_int -> opt_int `Some x;
 let None: opt_int = opt_int `None ();
 ```
 
-As a reminder, the constructor shorthand syntax is merely a convenient wrapper over the underlying type system (aka "syntactic sugar") and does not change the actual types or behavior. In particular, the syntax used for *matching* on variant types is unaffected. You still need to prefix variant tags with "`" in patterns:
+As a reminder, the constructor shorthand syntax is merely a convenient wrapper over the underlying type system (aka "syntactic sugar") and does not change the actual types or behavior. In particular, the syntax used for *matching* on variant types is unaffected. You still need to prefix variant tags with `` ` `` in patterns:
 
 ```ml
 let _ = fun x: opt_int :: int -> 
@@ -415,7 +415,7 @@ let _ = fun x: opt_int :: int ->
 ;
 ```
 
-If you write just "None" in a pattern instead of "`None", it will be interpreted as a variable pattern (which matches everything). Fortunately, this mistake will nearly always result in a compile error, because wildcard matches make every case after them unreachable, and having unreachable match cases is an error.
+If you write just `None` in a pattern instead of `` `None``, it will be interpreted as a variable pattern (which matches everything). Fortunately, this mistake will nearly always result in a compile error, because wildcard matches make every case after them unreachable, and having unreachable match cases is an error.
 
 ---
 

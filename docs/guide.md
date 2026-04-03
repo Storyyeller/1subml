@@ -74,6 +74,8 @@ This guide covers the 1SubML language from the ground up. You can try all exampl
 - [Variance dependent pair syntax](guide_ch4.md#variance-dependent-pair-syntax)
 - [Explicit registration of implicit coercions](guide_ch4.md#explicit-registration-of-implicit-coercions)
 - [Implicit declarations](guide_ch4.md#implicit-declarations)
+- [constructor-of!](guide_ch4.md#constructor-of)
+- [Embedded Javascript](guide_ch4.md#embedded-javascript)
 
 ### [Standard Library Reference](stdlib.md)
 - [Exception](stdlib.md#exception)

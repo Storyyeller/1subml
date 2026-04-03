@@ -203,7 +203,7 @@ The compiler only checks for whether a *single* case makes another case unreacha
 Recall that a [newtype definition](guide_ch2.md#polymorphic-newtypes) can have type parameters, e.g. `
 type baz[+T] = (float, T);`.
 
-In this example, the parameter is a simple type, but it doesn't have to be. Newtypes can have parameters that are *themselves* type constructions which take parameters, and so on. For example:
+In this example, the parameter is a simple type, but it doesn't have to be. Newtypes can have parameters that are *themselves* type constructors which take parameters, and so on. For example:
 
 ```ml
 type foo[+B[+]] = (B[int], B[str]);
@@ -232,7 +232,7 @@ In addition to newtypes, [generic function definitions](guide_ch3.md#generic-fun
 let _ = fun[B[+]] f: ([T]. T -> B[T]) :: (B[int], B[bool]) -> (f 1, f false);
 ```
 
-There is no partial application of type constructions in 1SubML. If you provide type parameters to a type constructor, you have to provide a type for *every* parameter and the resulting type always has kind `[]`. For example, if you have `type pair[+A; +B] = (A, B);`, then writing `pair[str]` is an error. However, you can allow the types to be inferred via `_`, e.g. `pair[str; _]`.
+There is no partial application of type constructors in 1SubML. If you provide type parameters to a type constructor, you have to provide a type for *every* parameter and the resulting type always has kind `[]`. For example, if you have `type pair[+A; +B] = (A, B);`, then writing `pair[str]` is an error. However, you can allow the types to be inferred via `_`, e.g. `pair[str; _]`.
 
 ## Higher kinded type inference
 
@@ -361,7 +361,7 @@ Additionally, polymorphic parameter ordering and recursive type names don't matt
 
 ## Removal of unused polymorphic parameters
 
-Unused polymorphic parameters are removed prior to spine construction. This means that `[T]. int -> int` is the same type as `int -> int` and `[A; B] B -> B` is the same type as `[B]. B -> B`.
+Unused polymorphic parameters are removed prior to spine construction. This means that `[T]. int -> int` is the same type as `int -> int` and `[A; B]. B -> B` is the same type as `[B]. B -> B`.
 
 Additionally, for polymorphic functions, parameters which are only used covariantly are replaced by `never` and parameters which are only used contravariantly are replaced by `any`. For example, `[A; B; C]. (A, B) -> (B, C)` is equivalent to `[B]. (any, B) -> (B, never)`.
 
@@ -486,6 +486,55 @@ We call the *source* type the `foo` or `foo[p1; p2; ...]` part, where `foo` is t
 
 Finally, the type of the coercion must be known (before type inference), at least enough to verify the above properties. This normally means that it needs to have an explicit type annotation.
 
+## constructor-of!
+
+The type expression `constructor-of!(<type>)` evaluates to the *type constructor* of `<type>`. (It is an error if `<type>` evaluates to a type is not a type constructor application.)  For example:
+
+```ml
+type foo[+T] = (T, T);
+
+// equivalent to alias f = foo;
+alias f = constructor-of!(foo[int]);
+let v: f[str] = foo ("Hello", "World");
+```
+
+For ordinary type constructors, this is not terribly useful because you could have just written `alias f = foo;` instead. However, for *spine constructors*, it is useful because there is no other way to refer to spine constructors:
+
+```ml
+alias foo = constructor-of!([T]. (T, any) -> (T, any));
+
+let f: foo[str; str] = fun[T] x: (T, str) :: (T, str) -> x;
+let f: foo[any; int] = fun[T] x: (T, _) :: (T, _) -> (x._0, 12213);
+```
+
+## Embedded Javascript
+
+You can directly embed Javascript in the output program using the special expression `js!%<js code>%`. This allows you to access functionality that could not otherwise be implemented in 1SubML. For example, here is the source code for the standard library `Dyn` module:
+
+```ml
+import Std{dyn};
+
+let new = js!%() => {let s = Symbol(); let wrap=t => [s, t]; let unwrap=([a, b]) => (a === s) ? {_:'Some', $: b} : {_:'None'}; return {wrap, unwrap}}%;
+
+export {
+    alias t: dyn;
+
+    new: [T]. any -> {wrap: T -> dyn; unwrap: dyn -> [`Some T | `None]};
+}
+```
+
+You can see the other standard library modules for other examples of embedded Javascript.
+
+The embedded code is included in the compiled output as-is with absolutely no checks, so it is the programmer's responsibility to ensure that the code is well-formed and adheres to the requirements that 1SubML expects.
+
+The type of a `js!` expression is `never`, meaning there is no type checking by default. The programmer is responsible for adding an appropriate type annotation to prevent users from accidentally misusing the resulting value.
+
 ---
 
 Previous: [Chapter 3: Polymorphism and modules](guide_ch3.md)
+
+
+
+
+
+
