@@ -5,7 +5,7 @@ let f = fun x -> (
     let _ = (x: [T]. T -> T :> Foo with [T = Box]);
 );
 ####
-KindError: Type constructor has 1 parameters here:
+TypeError: Type constructor has 1 parameters here:
 type Box[+T] = {v: T};
      ^~~               
 type Foo = int -> int;

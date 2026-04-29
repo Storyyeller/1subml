@@ -35,7 +35,7 @@ pub fn check_kinds(actual: &ast::SKind, expected: &ast::SKind) -> Result<()> {
 
     if expected.len() != actual.len() {
         return Err(SyntaxError::new2(
-            format!("KindError: Type constructor has {} parameters here:", actual.len()),
+            format!("TypeError: Type constructor has {} parameters here:", actual.len()),
             aspan,
             format!("Note: But it is expected to have {} parameters here:", expected.len()),
             espan,
@@ -46,7 +46,7 @@ pub fn check_kinds(actual: &ast::SKind, expected: &ast::SKind) -> Result<()> {
         if l.variance.0 != r.variance.0 {
             return Err(SyntaxError::new2(
                 format!(
-                    "KindError: Type constructor variance mismatch. Expected to be {} here:",
+                    "TypeError: Type constructor variance mismatch. Expected to be {} here:",
                     l.variance.0.to_display()
                 ),
                 l.variance.1,
@@ -118,7 +118,7 @@ impl KindVar {
             KindVar::Known(k) => Ok(k),
             KindVar::Var(rc) => {
                 let mut e = SyntaxError::new();
-                e.push_str("KindError: An explicit kind annotation is required here.");
+                e.push_str("TypeError: An explicit kind annotation is required here.");
                 e.push_insert("", rc.0, " as [...] ");
                 Err(e)
             }

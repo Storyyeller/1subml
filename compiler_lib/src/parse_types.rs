@@ -279,7 +279,7 @@ impl<'a> TypeParser<'a> {
         if con_params.len() != pt.args.0.len() {
             return Err(SyntaxError::new2(
                 format!(
-                    "KindError: Expected {} type parameters, found {}.",
+                    "TypeError: Expected {} type parameters, found {}.",
                     con_params.len(),
                     pt.args.0.len()
                 ),

@@ -1,7 +1,7 @@
 type Box[+T] = {v: T};
 let x: Box as [-] = Box {v=1};
 ####
-KindError: Type constructor variance mismatch. Expected to be covariant here:
+TypeError: Type constructor variance mismatch. Expected to be covariant here:
 type Box[+T] = {v: T};
          ^             
 let x: Box as [-] = Box {v=1};
