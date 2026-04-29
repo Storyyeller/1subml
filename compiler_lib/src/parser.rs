@@ -85,6 +85,10 @@ impl Parser {
             .parser
             .parse(&mut ctx, input)
             .map_err(|e| convert_parse_error(ctx.span_maker, e))?;
-        Ok((ast, ctx.imports))
+
+        let mut imports = ctx.imports;
+        // Sort imports alphabetically within a file.
+        imports.sort_by_key(|t| strings.resolve(&t.0.0));
+        Ok((ast, imports))
     }
 }

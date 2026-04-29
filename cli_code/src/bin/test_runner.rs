@@ -18,7 +18,7 @@ struct Args {
     paths: Vec<PathBuf>,
 
     /// Update expected outputs to match actual outputs
-    #[arg(long)]
+    #[arg(short, long)]
     update: bool,
 
     /// Directory to cache JS execution results

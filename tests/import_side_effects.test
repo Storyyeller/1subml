@@ -23,9 +23,9 @@ print "E";
 #### F.ml
 print "F";
 ####
-C
 E
 B
 F
 D
 A
+C

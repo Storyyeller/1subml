@@ -469,7 +469,7 @@ export {
 
 Imports must form an acyclic graph. There is currently no way to have multi-file cyclic dependencies in 1SubML.
 
-If the imported file has side effects, those side effects occur before the file that imported them runs. Imports are executed in the order they appear in the file (including recursively), but at most once per imported file. 
+If the imported file has side effects, those side effects occur before the file that imported them runs. If a file imports multiple dependencies, they are executed in sorted order, but at most once per imported file. 
 
 ```ml
 // A.ml
@@ -500,7 +500,7 @@ import C;
 import E;
 import A;
 import D;
-// prints C E B F D A
+// prints E B F D A C
 ```
 
 Imports are resolved statically. An import anywhere in a file will cause the referenced file to be imported, even if it is nested in an expression which may not be executed:
